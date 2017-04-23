@@ -81,7 +81,6 @@ compiler.compile()
 ### Development setup
 
 During development we want to build whenever our code changes, in both the client and the server.
-
 This is possible thanks to `.watch()` and `.middleware()`:
 
 - `.watch()` will watch for code changes and compile automatically
@@ -100,10 +99,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const app = express();
 
 // Static files are served without any cache for development
-app.use('/', express.static('public'), {
-    maxAge: 0,
-    etag: false,
-}));
+app.use('/', express.static('public', { maxAge: 0, etag: false }));
 
 // Setup the compiler & add middleware to the express app
 {
@@ -129,7 +125,7 @@ app.get('*', (req, res, next) => {
 
     render({ req, res })
     .catch((err) => setImmediate(() => next(err)));
-};
+});
 ```
 
 Note that adding `webpack-dev-middleware` is unnecessary since it's being used inside. You may tweak its options with `compiler.middleware({ devMiddleware })`.
@@ -146,8 +142,8 @@ Please note that most of this stuff is low-level but allows you to build complex
 
 | Name   | Description   | Returns |
 | ------ | ------------- | ------- |
-| compile() | Compile both the client & server | Promise |
-| watch() | Start watching changes and compile on-the-fly | Compiler (self) |
+| compile() | Compiles both the client & server | Promise |
+| watch() | Starts watching for changes and compile them on-the-fly | Compiler (self) |
 | middleware() | Returns the base express middleware | function |
 | isRunning() | Checks if the compiler running | boolean
 | getResult() | Gets the compilation result or null if not available | Error
@@ -160,7 +156,7 @@ Please note that most of this stuff is low-level but allows you to build complex
 | ------ | ------------- | -------- |
 | begin | Emitted when a compilation starts | |
 | error | Emitted when the compilation fails | `err` |
-| result | Emitted when the compilation finishes | `result` |
+| end | Emitted when the compilation completes | `result` |
 
 ```js
 compiler
@@ -170,7 +166,7 @@ compiler
     err.client && console.log('Client error', err.client);
     err.server && console.log('Server error', err.server);
 })
-.on('result', (result) => {
+.on('end', (result) => {
     console.log('Compilation finished');
     console.log('Client result', result.client);
     console.log('Server result', result.server);
