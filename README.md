@@ -62,8 +62,8 @@ const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
 | Name   | Description   | Returns |
 | ------ | ------------- | ------- |
 | compile() | Compiles both the client & server | Promise |
-| middleware() | Returns the base express middleware | function |
-| watch() | Starts watching for changes and compile on-the-fly | Object - [Watching](https://github.com/webpack/webpack/blob/53bb15b1ed64f8636036f773100d502909bd1e6b/lib/Compiler.js#L13) instances indexed by type |
+| middleware() | Returns the express middleware for development | function |
+| watch() | Starts watching for changes and compiles on-the-fly | Object |
 | stopWatching() | Stops watching for changes | Promise |
 | isRunning() | Checks if the compiler is running | boolean
 | getError() | Gets the compilation error or null if there's no error | Error
