@@ -43,7 +43,9 @@ This is complex, especially setting up the development server:
 
 ## API
 
-Calling `webpack-isomorphic-compiler` returns a compiler object which inherits from [EventEmitter](https://nodejs.org/api/events.html) and offers some useful methods & properties.   
+**webpackIsomorphicCompiler(clientConfig, serverConfig)**
+
+Creates a compiler object which inherits from [EventEmitter](https://nodejs.org/api/events.html) and offers some useful methods & properties.   
 
 ```js
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
@@ -56,14 +58,16 @@ const serverConfig = /* your server webpack config */
 const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
 ```
 
+The first entry from the `serverConfig` will be picked up as the server bundle.
+
 
 #### Methods
 
 | Name   | Description   | Returns |
 | ------ | ------------- | ------- |
 | compile() | Compiles both the client & server | Promise |
-| middleware() | Returns the express middleware for development | function |
-| watch() | Starts watching for changes and compiles on-the-fly | Object |
+| middleware([options]) | Returns the express middleware for development | function |
+| watch([options]) | Starts watching for changes and compiles on-the-fly | Object |
 | stopWatching() | Stops watching for changes | Promise |
 | isRunning() | Checks if the compiler is running | boolean
 | getError() | Gets the compilation error or null if there's no error | Error

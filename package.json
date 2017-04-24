@@ -1,0 +1,44 @@
+{
+  "name": "webpack-isomorphic-compiler",
+  "version": "0.0.0",
+  "description": "A compiler utility that makes your life easier if are you building webpack powered apps with server-side rendering and hot module replacement/reload in mind",
+  "keywords": [
+    "webpack",
+    "isomorphic",
+    "server-side",
+    "rendering",
+    "render",
+    "express",
+    "middleware"
+  ],
+  "author": "André Cruz <andre@moxy.studio>",
+  "license": "MIT",
+  "bugs": "https://github.com/moxystudio/webpack-isomorphic-compiler/issues",
+  "homepage": "https://github.com/moxystudio/webpack-isomorphic-compiler",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:moxystudio/webpack-isomorphic-compiler"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:staged": "lint-staged",
+    "test": "jest --env node --coverage",
+    "test:watch": "jest --env node --watch",
+    "posttest": "npm run lint",
+    "precommit": "npm run lint:staged"
+  },
+  "lint-staged": {
+    "*.js": "eslint"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-moxy": "^2.0.2",
+    "husky": "^0.13.3",
+    "jest": "^19.0.2",
+    "lint-staged": "^3.4.0"
+  },
+  "dependencies": {
+    "p-defer": "^1.0.0",
+    "p-props": "^1.0.0"
+  }
+}
