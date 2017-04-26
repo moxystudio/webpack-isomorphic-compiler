@@ -111,7 +111,7 @@ compiler
 | Name   | Description   | Type |
 | ------ | ------------- | -------- |
 | client | A facade for the client compiler | Object |
-| server | A facade for the client compiler | Object |
+| server | A facade for the server compiler | Object |
 
 Both `client` and `server` facades have the following methods:
 
@@ -120,8 +120,8 @@ Both `client` and `server` facades have the following methods:
 | isRunning() | Checks if the compiler is running | boolean
 | getError() | Gets the compilation error or null if there's no error | Error
 | getResult() | Gets the compilation result or null if not available | Object
-| webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
-| webpackConfig | The client's webpack config |
+| webpackCompiler | The webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
+| webpackConfig | The webpack config |
 
 Calling any of the `client.webpackCompiler` and `server.webpackCompiler` public methods is now allowed.
 
