@@ -116,6 +116,7 @@ compiler
 Both `client` and `server` facades have the following methods:
 
 | Name   | Description   | Type |
+| ------ | ------------- | -------- |
 | isRunning() | Checks if the compiler is running | boolean
 | getError() | Gets the compilation error or null if there's no error | Error
 | getResult() | Gets the compilation result or null if not available | Object
