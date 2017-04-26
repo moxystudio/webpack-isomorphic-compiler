@@ -3,5 +3,5 @@
     "extends": [
         "eslint-config-moxy/es6",
         "eslint-config-moxy/addons/node"
-    ],
+    ]
 }

@@ -45,7 +45,8 @@ This is complex, especially setting up the development server:
 
 **webpackIsomorphicCompiler(clientConfig, serverConfig)**
 
-Creates a compiler object which inherits from [EventEmitter](https://nodejs.org/api/events.html) and offers some useful methods & properties.   
+Creates an aggregated compiler that wraps both client and server webpack compilers.   
+The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html).
 
 ```js
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
@@ -58,20 +59,26 @@ const serverConfig = /* your server webpack config */
 const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
 ```
 
-The first entry from the `serverConfig` will be picked up as the server bundle.
+Note that the first entrypoint from the `serverConfig` will be automatically used as the server bundle.
 
 
-#### Methods
+#### Main methods
 
 | Name   | Description   | Returns |
 | ------ | ------------- | ------- |
 | compile() | Compiles both the client & server | Promise |
-| middleware([options]) | Returns the express middleware for development | function |
-| watch([options]) | Starts watching for changes and compiles on-the-fly | Object |
+| watch([options]) | Starts watching for changes and compiles on-the-fly | Object(self) |
 | stopWatching() | Stops watching for changes | Promise |
 | isRunning() | Checks if the compiler is running | boolean
 | getError() | Gets the compilation error or null if there's no error | Error
 | getResult() | Gets the compilation result or null if not available | Object
+
+
+#### Additional methods
+
+| Name   | Description   | Returns |
+| ------ | ------------- | ------- |
+| middleware([options]) | Returns the express middleware for development | function |
 
 
 #### Events
@@ -80,40 +87,42 @@ The first entry from the `serverConfig` will be picked up as the server bundle.
 | ------ | ------------- | -------- |
 | begin | Emitted when a compilation starts | |
 | error | Emitted when the compilation fails | `err` |
-| end | Emitted when the compilation completes | `result` |
+| end | Emitted when the compilation completes successfully | `result` |
 
 ```js
 compiler
 .on('begin', () => console.log('Compilation started'))
+.on('end', (result) => {
+    console.log('Compilation finished successfully');
+    console.log('Client result', result.client);
+    console.log('Server result', result.server);
+})
 .on('error', (err) => {
-    console.log('Compilation failed', err);
+    console.log('Compilation failed')
+    console.log(err.message);
     err.client && console.log('Client error', err.client);
     err.server && console.log('Server error', err.server);
 })
-.on('end', (result) => {
-    console.log('Compilation finished');
-    console.log('Client result', result.client);
-    console.log('Server result', result.server);
-});
 ```
 
 
-#### Properties
+#### Read-only properties
 
 | Name   | Description   | Type |
 | ------ | ------------- | -------- |
-| client | The client compiler | [BaseCompiler](./lib/baseCompiler) |
-| server | The server compiler | [BaseCompiler](./lib/baseCompiler) |
+| client | A facade for the client compiler | Object |
+| server | A facade for the client compiler | Object |
 
-
-#### BaseCompiler
-
-The [BaseCompiler](./lib/baseCompiler) is responsible for compiling a specific type (client or server) whereas the Compiler aggregates both the client and server base compilers. It's interface is similar to [Compiler](./lib/compiler) . It has the same events and some of its methods & properties but, most importantly, provides the following properties:
+Both `client` and `server` facades have the following methods:
 
 | Name   | Description   | Type |
-| ------ | ------------- | -------- |
-| config | The webpack config | Object |
-| webpackCompiler | The webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/53bb15b1ed64f8636036f773100d502909bd1e6b/lib/Compiler.js#L158) (webpack's) |
+| isRunning() | Checks if the compiler is running | boolean
+| getError() | Gets the compilation error or null if there's no error | Error
+| getResult() | Gets the compilation result or null if not available | Object
+| webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
+| webpackConfig | The client's webpack config |
+
+Calling any of the `client.webpackCompiler` and `server.webpackCompiler` public methods is now allowed.
 
 
 ## Typical usage
@@ -121,7 +130,7 @@ The [BaseCompiler](./lib/baseCompiler) is responsible for compiling a specific t
 ### Making a production-ready build
 
 Making a production-ready build is as simple as calling `compile()`.  
-This method returns a promise that only fulfills when both the client and server compiler succeed.
+This method returns a promise that only fulfills when both the client and server compilation succeeds.
 
 ```js
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
@@ -142,8 +151,19 @@ compiler.compile()
     // }
 })
 .catch((err) => {
-    // err is an aggregation error that may contain the `client` and/or `server` properties
-    // which point to the client and server compilation errors respectively
+    // err = {
+    //   message: 'Compilation failed',
+    //   [client]: {
+    //      message: 'Client compilation error message'
+    //      [stats]: <webpack-stats>,
+    //      ...
+    //   },
+    //   [server]: {
+    //      message: 'Client compilation error message'
+    //      [stats]: <webpack-stats>
+    //      ...
+    //   }
+    // }
 })
 ```
 
@@ -165,25 +185,21 @@ const express = require('express');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
+// Get the client & server configs and setup the compiler
+const clientConfig = /* your client webpack config */;
+const serverConfig = /* your server webpack config */
+const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
+
+// Build our express app
 const app = express();
 
 // Static files are served without any cache for development
 app.use('/', express.static('public', { maxAge: 0, etag: false }));
 
-// Setup the compiler & add middleware to the express app
-{
-    // Get the client & server configs
-    const clientConfig = /* your client webpack config */;
-    const serverConfig = /* your server webpack config */
-
-    // Create the compiler
-    const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
-
-    // Add the middleware that will wait for both client and server compilations to be ready
-    app.use(compiler.middleware());
-    // Additionally you may add webpack-hot-middleware to provide hot module replacement
-    app.use(webpackHotMiddleware(compiler.client.webpackCompiler, { quiet: true }));
-}
+// Add the middleware that will wait for both client and server compilations to be ready
+app.use(compiler.middleware());
+// Additionally you may add webpack-hot-middleware to provide hot module replacement
+app.use(webpackHotMiddleware(compiler.client.webpackCompiler, { quiet: true }));
 
 // Catch all route to attempt to render our app
 app.get('*', (req, res, next) => {
@@ -194,7 +210,7 @@ app.get('*', (req, res, next) => {
 });
 ```
 
-Note that adding `webpack-dev-middleware` is unnecessary since it's being used inside. You may tweak its options with `compiler.middleware({ devMiddleware })`.
+Note that adding `webpack-dev-middleware` is unnecessary since it's being used internally. You may tweak its options with `compiler.middleware({ devMiddleware })`.
 
 
 ## Tests

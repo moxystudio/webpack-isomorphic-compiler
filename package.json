@@ -38,7 +38,12 @@
     "lint-staged": "^3.4.0"
   },
   "dependencies": {
+    "compose-middleware": "^2.2.0",
+    "lodash.pick": "^4.4.0",
+    "lodash.wrap": "^4.1.1",
     "p-defer": "^1.0.0",
-    "p-props": "^1.0.0"
+    "p-props": "^1.0.0",
+    "webpack": "^2.4.1",
+    "webpack-dev-middleware": "^1.10.2"
   }
 }
