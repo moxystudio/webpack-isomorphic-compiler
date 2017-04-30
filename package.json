@@ -1,7 +1,7 @@
 {
   "name": "webpack-isomorphic-compiler",
   "version": "0.0.0",
-  "description": "A compiler utility that makes your life easier if are you building webpack powered apps with server-side rendering and hot module replacement/reload in mind",
+  "description": "A compiler that makes your life easier if you are building isomorphic webpack powered apps, that is, single page applications with server-side rendering",
   "keywords": [
     "webpack",
     "isomorphic",
