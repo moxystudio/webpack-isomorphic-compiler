@@ -110,7 +110,7 @@ Available options:
 
 | Name   | Description   | Type     | Default  |
 | ------ | ------------- | -------- | -------- |
-| report | Enable reporting | boolean|[Object](#reporter) | false
+| report | Enable reporting | boolean/[Object](#reporter) | false
 
 
 ### .watch([options], [handler])
@@ -127,6 +127,7 @@ Available options:
 | ------ | ------------- | -------- | ------- |
 | poll | Use polling instead of native watchers | boolean | false
 | aggregateTimeout | Wait so long for more changes (ms) | `err` | 200
+| report | Enable reporting | boolean/[Object](#reporter) | false
 
 ```js
 compiler.watch((err, stats) => {
@@ -147,22 +148,22 @@ Stops watching for changes.
 Returns a promise that fulfills when done.
 
 
-### isCompiling()
+### .isCompiling()
 
 Returns a boolean indicating if the code is being compiled.
 
 
-### getError()
+### .getError()
 
 Returns the compilation error or null if none.
 
 
-### getStats()
+### .getStats()
 
 Returns the compilation stats object (`{ client, server }`) or null if it failed or not yet available.
 
 
-### client & server webpack's
+### Client & server webpack's
 
 Both `client` and `server` properties contain their webpack configs & compilers.
 
@@ -174,7 +175,7 @@ Both `client` and `server` properties contain their webpack configs & compilers.
 Calling webpack compiler public methods is now allowed.
 
 
-### reporter
+### Reporter
 
 Both `run()` and `watch()` accepts a `report` option that, when enabled, prints information related to the compilation process.
 
