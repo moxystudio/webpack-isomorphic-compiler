@@ -2,6 +2,7 @@
 
 const WritableStream = require('stream').Writable;
 const fs = require('fs');
+const escapeRegExp = require('lodash.escaperegexp');
 const createCompiler = require('./util/createCompiler');
 const configBasicClient = require('./configs/basic-client');
 const configBasicServer = require('./configs/basic-server');
@@ -18,13 +19,18 @@ function createInMemoryOutputStream() {
         },
 
         getOutput() {
-            return output
             // Replace (xxxms) with (10ms)
-            .replace(/\(\d+ms\)/g, '(10ms)')
+            output = output.replace(/\(\d+ms\)/g, '(10ms)');
             // Remove trailing spaces in new lines (webpack toString adds a few..)
-            .split('\n')
+            output = output.split('\n')
             .map((line) => line.trimRight())
             .join('\n');
+            // Remove absolute directory references
+            output = output.replace(new RegExp(escapeRegExp(process.cwd()), 'g'), '');
+            // Remove reference to lines & columns in stack traces
+            output = output.replace(/\.js:\d+:\d+/g, '');
+
+            return output;
         },
     });
 }
