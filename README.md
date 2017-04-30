@@ -14,7 +14,7 @@
 [david-dm-dev-url]:https://david-dm.org/moxystudio/webpack-isomorphic-compiler#info=devDependencies
 [david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/webpack-isomorphic-compiler.svg
 
-A compiler utility that makes your life easier if you are building [webpack](https://webpack.js.org/) powered apps with server-side rendering and hot module replacement/reload in mind.
+A compiler that makes your life easier if you are building isomorphic [webpack](https://webpack.js.org/) powered apps, that is, single page applications with server-side rendering.
 
 
 ## Installation
@@ -28,8 +28,8 @@ The current version only works with webpack v2.x.x.
 
 Building applications powered by webpack with server-side rendering (isomorphic/universal apps) is hard:
 
-- When making a production build, you must run webpack for both the client and server
-- When developing, we want to rebuild whenever code changes and offer hot module replacement
+- When making a production build, you must compile both the client and server
+- When developing, we want to rebuild the client & server whenever code changes and offer hot module replacement
 
 This is complex, especially setting up the development server:
 
@@ -38,7 +38,14 @@ This is complex, especially setting up the development server:
 - When the server compilations succeeds, we must re-require our server bundle to get its new exports
 - The client and server compilers must be in sync and live in perfect harmony
 
-`webpack-isomorphic-compiler` offers an easy-to-use solution to the challenges described above.
+To solve the compilation part, `webpack-isomorphic-compiler` offers an aggregated compiler that syncs up the client and server compilation.
+To solve the development part, [webpack-isomorphic-dev-middleware](https://github.com/moxystudio/webpack-isomorphic-dev-middleware) offers an express middleware that integrates seamlessly with `webpack-isomorphic-compiler`.
+
+But why not use the multi-compiler mode from webpack? Glad you ask.
+Webpack's MultiCompiler doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood. For instance, it's hard to known when a compilation starts when using `.watch()`.
+Additionally, it has some issues when used with `webpack-dev-middleware`.
+
+`webpack-isomorphic-compiler` solves the isomorphic compilation in a clear way and with a saner API.
 
 
 ## API
@@ -46,171 +53,137 @@ This is complex, especially setting up the development server:
 **webpackIsomorphicCompiler(clientConfig, serverConfig)**
 
 Creates an aggregated compiler that wraps both client and server webpack compilers.   
-The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html).
 
 ```js
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 
-// Get the client & server configs
-const clientConfig = /* your client webpack config */;
-const serverConfig = /* your server webpack config */
-
-// Create the compiler
 const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
 ```
 
-Note that the first entrypoint from the `serverConfig` will be automatically used as the server bundle.
-
-
-#### Main methods
-
-| Name   | Description   | Returns |
-| ------ | ------------- | ------- |
-| compile() | Compiles both the client & server | Promise |
-| watch([options]) | Starts watching for changes and compiles on-the-fly | Object(self) |
-| stopWatching() | Stops watching for changes | Promise |
-| isRunning() | Checks if the compiler is running | boolean
-| getError() | Gets the compilation error or null if there's no error | Error
-| getResult() | Gets the compilation result or null if not available | Object
-
-
-#### Additional methods
-
-| Name   | Description   | Returns |
-| ------ | ------------- | ------- |
-| middleware([options]) | Returns the express middleware for development | function |
-
-
-#### Events
+The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html) and emits the following events:
 
 | Name   | Description   | Argument |
 | ------ | ------------- | -------- |
 | begin | Emitted when a compilation starts | |
 | error | Emitted when the compilation fails | `err` |
-| end | Emitted when the compilation completes successfully | `result` |
+| end | Emitted when the compilation completes successfully | `stats` |
 
 ```js
 compiler
 .on('begin', () => console.log('Compilation started'))
-.on('end', (result) => {
+.on('end', (stats) => {
     console.log('Compilation finished successfully');
-    console.log('Client result', result.client);
-    console.log('Server result', result.server);
+    console.log('Client stats', stats.client);
+    console.log('Server stats', stats.server);
 })
 .on('error', (err) => {
     console.log('Compilation failed')
     console.log(err.message);
-    err.client && console.log('Client error', err.client);
-    err.server && console.log('Server error', err.server);
+    console.log(err.stats.toString());
 })
 ```
 
+### .run([options])
 
-#### Read-only properties
+Compiles both the client & server.   
+Returns a promise that fulfills with a `stats` object or is rejected with an error.
 
-| Name   | Description   | Type |
-| ------ | ------------- | -------- |
-| client | A facade for the client compiler | Object |
-| server | A facade for the client compiler | Object |
-
-Both `client` and `server` facades have the following methods:
-
-| Name   | Description   | Type |
-| isRunning() | Checks if the compiler is running | boolean
-| getError() | Gets the compilation error or null if there's no error | Error
-| getResult() | Gets the compilation result or null if not available | Object
-| webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
-| webpackConfig | The client's webpack config |
-
-Calling any of the `client.webpackCompiler` and `server.webpackCompiler` public methods is now allowed.
-
-
-## Typical usage
-
-### Making a production-ready build
-
-Making a production-ready build is as simple as calling `compile()`.  
-This method returns a promise that only fulfills when both the client and server compilation succeeds.
+This is similar to webpack's run() method, except that it returns a promise which gets rejected if stats contains errors.
 
 ```js
-const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
-
-// Get the client & server configs
-const clientConfig = /* your client webpack config */;
-const serverConfig = /* your server webpack config */
-
-// Create the compiler
-const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
-
-// Compile!
-compiler.compile()
-.then((result) => {
-    // result = {
-    //   client: { stats },
-    //   server: { stats, exports }
+compiler.run()
+.then((stats) => {
+    // stats = {
+    //   client,
+    //   server,
     // }
 })
 .catch((err) => {
     // err = {
-    //   message: 'Compilation failed',
-    //   [client]: {
-    //      message: 'Client compilation error message'
-    //      [stats]: <webpack-stats>,
-    //      ...
-    //   },
-    //   [server]: {
-    //      message: 'Client compilation error message'
-    //      [stats]: <webpack-stats>
-    //      ...
-    //   }
+    //   message: 'Error message',
+    //   [stats]: <webpack-stats>
     // }
-})
-```
-
-
-### Development setup
-
-During development we want to build whenever our code changes, in both the client and the server.   
-This usually involves setting up an [express](https://expressjs.com/) server. To ease the setup, the `.middleware()` function will return an express middleware that:
-
-- Automatically calls `.watch()` which looks for code changes and automatically compiles
-- Optimizes compilation by using [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware)
-- Delays responses until the aggregated compiler finishes
-- Calls `next(err)` if the aggregated compilation failed
-- Adds `isomorphicCompilerResult` to `res` and call `next()` if the aggregated compilation succeeds
-
-
-```js
-const express = require('express');
-const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-
-// Get the client & server configs and setup the compiler
-const clientConfig = /* your client webpack config */;
-const serverConfig = /* your server webpack config */
-const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
-
-// Build our express app
-const app = express();
-
-// Static files are served without any cache for development
-app.use('/', express.static('public', { maxAge: 0, etag: false }));
-
-// Add the middleware that will wait for both client and server compilations to be ready
-app.use(compiler.middleware());
-// Additionally you may add webpack-hot-middleware to provide hot module replacement
-app.use(webpackHotMiddleware(compiler.client.webpackCompiler, { quiet: true }));
-
-// Catch all route to attempt to render our app
-app.get('*', (req, res, next) => {
-    const { exports: { render } } } = res.isomorphicCompilerResult.server;
-
-    render({ req, res })
-    .catch((err) => setImmediate(() => next(err)));
 });
 ```
 
-Note that adding `webpack-dev-middleware` is unnecessary since it's being used internally. You may tweak its options with `compiler.middleware({ devMiddleware })`.
+Available options:
+
+| Name   | Description   | Type     | Default  |
+| ------ | ------------- | -------- | -------- |
+| report | Enable reporting | boolean|[Object](#reporter) | false
+
+
+### .watch([options], [handler])
+
+Starts watching for changes and compiles on-the-fly.   
+Returns itself to allow chaining.
+
+Calls `handler` everytime the compilation fails or succeeds.
+This is similar to webpack's watch() method, except that `handler` gets called with an error if stats contains errors.
+
+Available options:
+
+| Name   | Description   | Type     | Default |
+| ------ | ------------- | -------- | ------- |
+| poll | Use polling instead of native watchers | boolean | false
+| aggregateTimeout | Wait so long for more changes (ms) | `err` | 200
+
+```js
+compiler.watch((err, stats) => {
+    // err = {
+    //   message: 'Error message',
+    //   [stats]: <webpack-stats>
+    // }
+    // stats = {
+    //   client,
+    //   server,
+    // }
+});
+```
+
+### .unwatch()
+
+Stops watching for changes.   
+Returns a promise that fulfills when done.
+
+
+### isCompiling()
+
+Returns a boolean indicating if the code is being compiled.
+
+
+### getError()
+
+Returns the compilation error or null if none.
+
+
+### getStats()
+
+Returns the compilation stats object (`{ client, server }`) or null if it failed or not yet available.
+
+
+### client & server webpack's
+
+Both `client` and `server` properties contain their webpack configs & compilers.
+
+| Name   | Description   | Type     |
+| ------ | ------------- | -------- |
+| webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
+| webpackConfig | The client's webpack config | Object |
+
+Calling webpack compiler public methods is now allowed.
+
+
+### reporter
+
+Both `run()` and `watch()` accepts a `report` option that, when enabled, prints information related to the compilation process.
+
+The option can be a boolean or an object that maps to the following options:
+
+| Name   | Description   | Type     | Default |
+| ------ | ------------- | -------- | ------- |
+| stats | Display webpack stats after each successful compilation | boolean|string | false
+| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | sane default
 
 
 ## Tests
