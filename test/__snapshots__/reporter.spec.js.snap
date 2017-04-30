@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reporter should only display stats in the first compilation if options.stats = 'once' 1`] = `
+"[2m•[22m Compiling...
+[32m✓[39m Compilation succeeded [2m(10ms)[22m
+
+    [7m CLIENT                   [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mclient.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+
+    [7m SERVER                   [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mserver.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+
+[2m•[22m Compiling...
+[32m✓[39m Compilation succeeded [2m(10ms)[22m
+
+"
+`;
+
+exports[`reporter should report a failed compilation 1`] = `
+"[2m•[22m Compiling...
+[31m✖[39m Compilation failed
+
+    [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mserver.js[39m[22m  2.89 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+
+    [1m[31mERROR in ./test/configs/files/syntax-error.js
+    Module parse failed: /Users/andrecruz/Work/moxy/moxy/webpack-isomorphic-compiler/test/configs/files/syntax-error.js Unexpected token (4:0)
+    You may need an appropriate loader to handle this file type.
+    |
+    | console.log('Hello!'
+    | [39m[22m
+
+"
+`;
+
+exports[`reporter should report a fatal error while compiling 1`] = `
+"[2m•[22m Compiling...
+[31m✖[39m Compilation failed
+
+    foo
+    [0m[90m-[0m [0m[93mreporter.spec.js[0m[90m:[0m[93m63[0m[37m [0m[37mObject.it[0m
+    [0m  [0m  [0m[90m/Users/andrecruz/Work/moxy/moxy/webpack-isomorphic-compiler/test/reporter.spec.js:63:32[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-async.js[0m[90m:[0m[93m42[0m[37m [0m[37mObject.<anonymous>[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/build/jasmine-async.js:42:32[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1984[0m[37m [0m[37mattemptAsync[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1984:24[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1939[0m[37m [0m[37mQueueRunner.run[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1939:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1966[0m[37m [0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1966:16[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1909[0m[37m [0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1909:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-async.js[0m[90m:[0m[93m68[0m[37m [0m[37mObject.fn[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/build/jasmine-async.js:68:11[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1984[0m[37m [0m[37mattemptAsync[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1984:24[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1939[0m[37m [0m[37mQueueRunner.run[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1939:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1927[0m[37m [0m[37mQueueRunner.execute[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1927:10[0m
+
+[2m•[22m Compiling...
+[31m✖[39m Compilation failed
+
+    foo
+    [0m[90m-[0m [0m[93mreporter.spec.js[0m[90m:[0m[93m63[0m[37m [0m[37mObject.it[0m
+    [0m  [0m  [0m[90m/Users/andrecruz/Work/moxy/moxy/webpack-isomorphic-compiler/test/reporter.spec.js:63:32[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-async.js[0m[90m:[0m[93m42[0m[37m [0m[37mObject.<anonymous>[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/build/jasmine-async.js:42:32[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1984[0m[37m [0m[37mattemptAsync[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1984:24[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1939[0m[37m [0m[37mQueueRunner.run[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1939:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1966[0m[37m [0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1966:16[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1909[0m[37m [0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1909:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-async.js[0m[90m:[0m[93m68[0m[37m [0m[37mObject.fn[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/build/jasmine-async.js:68:11[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1984[0m[37m [0m[37mattemptAsync[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1984:24[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1939[0m[37m [0m[37mQueueRunner.run[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1939:9[0m
+    [0m  [0m[90m-[0m [0m[93mjasmine-2.5.2.js[0m[90m:[0m[93m1927[0m[37m [0m[37mQueueRunner.execute[0m
+    [0m  [0m  [0m[90m[webpack-isomorphic-compiler]/[jest-jasmine2]/vendor/jasmine-2.5.2.js:1927:10[0m
+
+"
+`;
+
+exports[`reporter should report a successful compilation 1`] = `
+"[2m•[22m Compiling...
+[32m✓[39m Compilation succeeded [2m(10ms)[22m
+
+"
+`;
+
+exports[`reporter should use options.statsOptions when printing stats 1`] = `
+"[2m•[22m Compiling...
+[32m✓[39m Compilation succeeded [2m(10ms)[22m
+
+    [7m CLIENT                   [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    Hash: [1ma15ebe812cb1f543fee8[39m[22m
+        [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mclient.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+
+    [7m SERVER                   [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    Hash: [1mfb1cf31fcb450d9c6374[39m[22m
+        [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+    [1m[32mserver.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+
+"
+`;
