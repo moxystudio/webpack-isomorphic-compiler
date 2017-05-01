@@ -50,7 +50,9 @@ describe('.run()', () => {
         const compiler = createCompiler(configBasicClient, configBasicServer);
         const contrivedError = new Error('foo');
 
-        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => callback(contrivedError));
+        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
+            setImmediate(() => callback(contrivedError));
+        });
 
         return compiler.run()
         .then(() => {

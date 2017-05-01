@@ -19,21 +19,18 @@ function createInMemoryOutputStream() {
         },
 
         getOutput() {
-            const lines = output
-            .split('\n')
+            return output
             // Replace (xxxms) with (10ms)
-            .map((line) => line.replace(/\(\d+ms\)/g, '(10ms)'))
-            // Remove trailing spaces in new lines (webpack toString adds a few..)
-            .map((line) => line.trimRight())
-            // Remove absolute directory references
-            .map((line) => line.replace(new RegExp(escapeRegExp(process.cwd()), 'g'), ''))
-            // Remove stack traces done by pretty-error
-            .map((line) => line.replace(new RegExp(`${escapeRegExp('    [0m')}.+`, 'g'), '[stack]'))
-            .filter((line) => line !== '[stack]')
+            .replace(/\(\d+ms\)/g, '(10ms)')
             // Remove any file sizes
-            .map((line) => line.replace(/\d+\.\d+\skB/g, 'x.xx kB'));
-
-            return lines.join('\n');
+            .replace(/\d+\.\d+\skB/g, 'x.xx kB')
+            // Remove trailing spaces in new lines (webpack toString adds a few..)
+            .replace(/ +$/, '')
+            // Remove absolute directory references
+            .replace(new RegExp(escapeRegExp(process.cwd()), 'g'), '')
+            // Normalize stack traces done by pretty-error
+            .replace(new RegExp(`${escapeRegExp('    [0m')}.+`, 'g'), '    [stack]')
+            .replace(/(\s{4}\[stack\])([\s\S]+\[stack\])*/, '$1');
         },
     });
 }
@@ -71,7 +68,9 @@ describe('reporter', () => {
         const outputStream = createInMemoryOutputStream();
         const contrivedError = new Error('foo');
 
-        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => callback(contrivedError));
+        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
+            setImmediate(() => callback(contrivedError));
+        });
 
         return compiler.run({
             report: { output: outputStream },
@@ -87,7 +86,27 @@ describe('reporter', () => {
         const outputStream = createInMemoryOutputStream();
         const contrivedError = Object.assign(new Error('foo'), { code: 'ENOENT', hideStack: true });
 
-        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => callback(contrivedError));
+        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
+            setImmediate(() => callback(contrivedError));
+        });
+
+        return compiler.run({
+            report: { output: outputStream },
+        })
+        .catch(() => {})
+        .then(() => {
+            expect(outputStream.getOutput()).toMatchSnapshot();
+        });
+    });
+
+    it('should report a TypeError error while compiling', () => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+        const contrivedError = Object.assign(new TypeError('foo'));
+
+        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
+            setImmediate(() => callback(contrivedError));
+        });
 
         return compiler.run({
             report: { output: outputStream },
@@ -127,5 +146,39 @@ describe('reporter', () => {
         .then(() => {
             expect(outputStream.getOutput()).toMatchSnapshot();
         });
+    });
+
+    it('should dispose the created reporter if .run() throws', () => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+
+        const promise = compiler.run({
+            report: { stats: true, statsOptions: { hash: true }, output: outputStream },
+        })
+        .then(() => {
+            expect(outputStream.getOutput()).toMatchSnapshot();
+        });
+
+        expect(() => compiler.run({
+            report: { stats: true, statsOptions: { hash: true }, output: outputStream },
+        })).toThrow(/\bidling\b/);
+
+        return promise;
+    });
+
+    it('should dispose the created reporter if .watch() throws', (done) => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+
+        compiler.watch({
+            report: { stats: true, statsOptions: { hash: true }, output: outputStream },
+        }, () => {
+            expect(outputStream.getOutput()).toMatchSnapshot();
+            done();
+        });
+
+        expect(() => compiler.watch({
+            report: { stats: true, statsOptions: { hash: true }, output: outputStream },
+        })).toThrow(/\bidling\b/);
     });
 });
