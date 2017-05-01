@@ -12,7 +12,7 @@ exports[`reporter should only display stats in the first compilation if options.
     [7m SERVER                   [27m
     [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
-    [1m[32mserver.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+    [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
 [2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
@@ -42,51 +42,11 @@ exports[`reporter should report a fatal error while compiling 1`] = `
 [31m✖[39m Compilation failed
 
     foo
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
 
 [2m•[22m Compiling...
 [31m✖[39m Compilation failed
 
     foo
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
-    [stack]
 
 "
 `;
@@ -112,7 +72,7 @@ exports[`reporter should use options.statsOptions when printing stats 1`] = `
     [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1mfb1cf31fcb450d9c6374[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
-    [1m[32mserver.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+    [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
 "
 `;

@@ -19,20 +19,21 @@ function createInMemoryOutputStream() {
         },
 
         getOutput() {
+            const lines = output
+            .split('\n')
             // Replace (xxxms) with (10ms)
-            output = output.replace(/\(\d+ms\)/g, '(10ms)');
+            .map((line) => line.replace(/\(\d+ms\)/g, '(10ms)'))
             // Remove trailing spaces in new lines (webpack toString adds a few..)
-            output = output.split('\n')
             .map((line) => line.trimRight())
-            .join('\n');
             // Remove absolute directory references
-            output = output.replace(new RegExp(escapeRegExp(process.cwd()), 'g'), '');
+            .map((line) => line.replace(new RegExp(escapeRegExp(process.cwd()), 'g'), ''))
             // Remove stack traces done by pretty-error
-            output = output.replace(new RegExp(`${escapeRegExp('    [0m')}.+`, 'g'), '    [stack]');
+            .map((line) => line.replace(new RegExp(`${escapeRegExp('    [0m')}.+`, 'g'), '[stack]'))
+            .filter((line) => line !== '[stack]')
             // Remove any file sizes
-            output = output.replace(/\d+\.\d+\skB/, 'x.xx kB');
+            .map((line) => line.replace(/\d+\.\d+\skB/g, 'x.xx kB'));
 
-            return output;
+            return lines.join('\n');
         },
     });
 }
