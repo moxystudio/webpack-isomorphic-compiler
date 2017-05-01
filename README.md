@@ -174,7 +174,7 @@ Both `client` and `server` properties contain their webpack configs & compilers.
 | webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
 | webpackConfig | The client's webpack config | object |
 
-Calling webpack compiler public methods is now allowed.
+Accessing webpack compiler public methods is NOT allowed and will throw an error.
 
 
 ### Reporter
