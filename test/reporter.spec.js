@@ -27,8 +27,10 @@ function createInMemoryOutputStream() {
             .join('\n');
             // Remove absolute directory references
             output = output.replace(new RegExp(escapeRegExp(process.cwd()), 'g'), '');
-            // Remove reference to lines & columns in stack traces
-            output = output.replace(/\.js:\d+:\d+/g, '');
+            // Remove stack traces done by pretty-error
+            output = output.replace(new RegExp(`${escapeRegExp('    [0m')}.+`, 'g'), '    [stack]');
+            // Remove any file sizes
+            output = output.replace(/\d+\.\d+\skB/, 'x.xx kB');
 
             return output;
         },
