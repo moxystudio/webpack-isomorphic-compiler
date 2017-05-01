@@ -65,8 +65,8 @@ The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html) an
 | Name   | Description   | Argument |
 | ------ | ------------- | -------- |
 | begin | Emitted when a compilation starts | |
-| error | Emitted when the compilation fails | `err` |
-| end | Emitted when the compilation completes successfully | `stats` |
+| error | Emitted when the compilation fails | err |
+| end | Emitted when the compilation completes successfully | stats |
 
 ```js
 compiler
@@ -126,7 +126,7 @@ Available options:
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
 | poll | Use polling instead of native watchers | boolean | false
-| aggregateTimeout | Wait so long for more changes (ms) | `err` | 200
+| aggregateTimeout | Wait so long for more changes (ms) | err | 200
 | report | Enable reporting | boolean/[object](#reporter) | false
 
 ```js
@@ -184,7 +184,7 @@ The option can be a boolean or an object that maps to the following options:
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
 | stats | Display webpack stats after each successful compilation | boolean|string | false
-| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | sane default
+| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83)
 
 
 ## Tests
