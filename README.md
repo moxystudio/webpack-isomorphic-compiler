@@ -165,7 +165,7 @@ Returns the compilation error or null if none.
 Returns the compilation stats object (`{ client, server }`) or null if it failed or not yet available.
 
 
-### Client & server webpack's
+### Client & server webpack related properties
 
 Both `client` and `server` properties contain their webpack configs & compilers.
 
