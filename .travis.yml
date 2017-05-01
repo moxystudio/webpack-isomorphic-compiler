@@ -3,5 +3,5 @@ node_js:
   - "6"
 # Report coverage
 after_success:
-    - "npm i codecov"
-    - "node_modules/.bin/codecov"
+  - "npm i codecov"
+  - "node_modules/.bin/codecov"
