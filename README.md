@@ -110,7 +110,7 @@ Available options:
 
 | Name   | Description   | Type     | Default  |
 | ------ | ------------- | -------- | -------- |
-| report | Enable reporting | boolean/[Object](#reporter) | false
+| report | Enable reporting | boolean/[object](#reporter) | false
 
 
 ### .watch([options], [handler])
@@ -127,7 +127,7 @@ Available options:
 | ------ | ------------- | -------- | ------- |
 | poll | Use polling instead of native watchers | boolean | false
 | aggregateTimeout | Wait so long for more changes (ms) | `err` | 200
-| report | Enable reporting | boolean/[Object](#reporter) | false
+| report | Enable reporting | boolean/[object](#reporter) | false
 
 ```js
 compiler.watch((err, stats) => {
@@ -170,7 +170,7 @@ Both `client` and `server` properties contain their webpack configs & compilers.
 | Name   | Description   | Type     |
 | ------ | ------------- | -------- |
 | webpackCompiler | The client's webpack compiler | [Compiler](https://github.com/webpack/webpack/blob/bd753567da1248624beaaea14af31d6dbe303411/lib/Compiler.js#L153) |
-| webpackConfig | The client's webpack config | Object |
+| webpackConfig | The client's webpack config | object |
 
 Calling webpack compiler public methods is now allowed.
 
