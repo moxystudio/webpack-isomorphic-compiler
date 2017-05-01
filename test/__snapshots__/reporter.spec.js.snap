@@ -4,14 +4,14 @@ exports[`reporter should dispose the created reporter if .run() throws 1`] = `
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1ma15ebe812cb1f543fee8[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1mfb1cf31fcb450d9c6374[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
@@ -23,14 +23,14 @@ exports[`reporter should dispose the created reporter if .watch() throws 1`] = `
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1ma15ebe812cb1f543fee8[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1mfb1cf31fcb450d9c6374[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
@@ -42,13 +42,13 @@ exports[`reporter should not display stats if options.stats = false 1`] = `
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
@@ -62,13 +62,13 @@ exports[`reporter should only display stats in the first compilation if options.
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
@@ -128,13 +128,13 @@ exports[`reporter should report a successful compilation 1`] = `
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
@@ -145,14 +145,14 @@ exports[`reporter should use options.statsOptions when printing stats 1`] = `
 "[2m•[22m Compiling...
 [32m✓[39m Compilation succeeded [2m(10ms)[22m
 
-    [7m CLIENT                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m CLIENT                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1ma15ebe812cb1f543fee8[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mclient.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
 
-    [7m SERVER                   [27m
-    [2m━━━━━━━━━━━━━━━━━━━━━━━━━[22m
+    [7m SERVER                             [27m
+    [2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[22m
     Hash: [1mfb1cf31fcb450d9c6374[39m[22m
         [1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
     [1m[32mserver.js[39m[22m  x.xx kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
