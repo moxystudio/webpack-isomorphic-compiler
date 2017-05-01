@@ -24,8 +24,6 @@ function createInMemoryOutputStream() {
             .replace(/\(\d+ms\)/g, '(10ms)')
             // Remove any file sizes
             .replace(/\d+\.\d+\skB/g, 'x.xx kB')
-            // Remove trailing spaces in new lines (webpack toString adds a few..)
-            .replace(/ +$/, '')
             // Remove absolute directory references
             .replace(new RegExp(escapeRegExp(process.cwd()), 'g'), '')
             // Normalize stack traces done by pretty-error
@@ -47,6 +45,44 @@ describe('reporter', () => {
         })
         .then(() => {
             expect(outputStream.getOutput()).toMatchSnapshot();
+        });
+    });
+
+    it('should only display stats in the first compilation if options.stats = \'once\'', (done) => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+        let callsCount = 0;
+
+        return compiler.watch({
+            report: { stats: 'once', output: outputStream },
+        }, () => {
+            callsCount += 1;
+
+            if (callsCount === 1) {
+                fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
+            } else {
+                expect(outputStream.getOutput()).toMatchSnapshot();
+                done();
+            }
+        });
+    });
+
+    it('should not display stats if options.stats = false', (done) => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+        let callsCount = 0;
+
+        return compiler.watch({
+            report: { stats: 'once', output: outputStream },
+        }, () => {
+            callsCount += 1;
+
+            if (callsCount === 1) {
+                fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
+            } else {
+                expect(outputStream.getOutput()).toMatchSnapshot();
+                done();
+            }
         });
     });
 
@@ -114,25 +150,6 @@ describe('reporter', () => {
         .catch(() => {})
         .then(() => {
             expect(outputStream.getOutput()).toMatchSnapshot();
-        });
-    });
-
-    it('should only display stats in the first compilation if options.stats = \'once\'', (done) => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
-        const outputStream = createInMemoryOutputStream();
-        let callsCount = 0;
-
-        return compiler.watch({
-            report: { stats: 'once', output: outputStream },
-        }, () => {
-            callsCount += 1;
-
-            if (callsCount === 1) {
-                fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
-            } else {
-                expect(outputStream.getOutput()).toMatchSnapshot();
-                done();
-            }
         });
     });
 
