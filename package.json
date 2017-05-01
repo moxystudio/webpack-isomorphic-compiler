@@ -8,8 +8,8 @@
     "server-side",
     "rendering",
     "render",
-    "express",
-    "middleware"
+    "compiler",
+    "compilation"
   ],
   "author": "André Cruz <andre@moxy.studio>",
   "license": "MIT",
