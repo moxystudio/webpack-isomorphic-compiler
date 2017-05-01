@@ -20,6 +20,20 @@ exports[`reporter should only display stats in the first compilation if options.
 "
 `;
 
+exports[`reporter should report a ENOENT error while compiling, hiding the stack 1`] = `
+"[2m•[22m Compiling...
+[31m✖[39m Compilation failed
+
+    [2mENOENT[22m foo
+
+[2m•[22m Compiling...
+[31m✖[39m Compilation failed
+
+    [2mENOENT[22m foo
+
+"
+`;
+
 exports[`reporter should report a failed compilation 1`] = `
 "[2m•[22m Compiling...
 [31m✖[39m Compilation failed

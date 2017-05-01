@@ -2,12 +2,11 @@
 
 const path = require('path');
 const pify = require('pify');
+const pFinally = require('p-finally');
 const rimraf = pify(require('rimraf'));
 const webpackIsomorphicCompiler = require('../../');
 
 const tmpDir = path.resolve(`${__dirname}/../tmp`);
-
-let count = 0;
 const compilers = [];
 
 function replaceOutputPath(webpackConfig) {
@@ -15,9 +14,11 @@ function replaceOutputPath(webpackConfig) {
         throw new Error(`\`webpackConfig.output.path\` must start with ${tmpDir}`);
     }
 
+    const uid = `${Math.round(Math.random() * 100000000000).toString(36)}-${Date.now().toString(36)}`;
+
     webpackConfig = Object.assign({}, webpackConfig);
     webpackConfig.output = Object.assign({}, webpackConfig.output);
-    webpackConfig.output.path = webpackConfig.output.path.replace(tmpDir, path.join(tmpDir, count.toString()));
+    webpackConfig.output.path = webpackConfig.output.path.replace(tmpDir, path.join(tmpDir, uid));
 
     return webpackConfig;
 }
@@ -25,8 +26,6 @@ function replaceOutputPath(webpackConfig) {
 // -----------------------------------------------------------
 
 function createCompiler(clientWebpackConfig, serverWebpackConfig) {
-    count += 1;
-
     clientWebpackConfig = replaceOutputPath(clientWebpackConfig);
     serverWebpackConfig = replaceOutputPath(serverWebpackConfig);
 
@@ -44,34 +43,30 @@ function teardown() {
         .removeAllListeners()
         .on('error', () => {});
 
-        // Unwatch
-        return compiler.unwatch()
-        // Wait for compilation.. just in case..
-        .then(() => {
-            if (!compiler.isCompiling()) {
-                return;
-            }
+        return pFinally(
+            // Unwatch
+            compiler.unwatch()
+            // Wait for compilation.. just in case..
+            .then(() => {
+                if (!compiler.isCompiling()) {
+                    return;
+                }
 
-            return new Promise((resolve) => {
-                compiler
-                .on('end', () => resolve())
-                .on('error', () => resolve());
-            });
-        });
+                return new Promise((resolve) => {
+                    compiler
+                    .on('end', () => resolve())
+                    .on('error', () => resolve());
+                });
+            }),
+            // Remove output dirs
+            () => Promise.all([
+                rimraf(compiler.client.webpackConfig.output.path),
+                rimraf(compiler.server.webpackConfig.output.path),
+            ])
+        );
     });
 
-    return Promise.all(promises)
-    // Remove temporary dir
-    .then(
-        () => rimraf(tmpDir),
-        (err) => (
-            rimraf(tmpDir)
-            .then(
-                () => { throw err; },
-                (err_) => { throw err_; }
-            )
-        )
-    );
+    return Promise.all(promises);
 }
 
 module.exports = createCompiler;

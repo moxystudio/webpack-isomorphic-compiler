@@ -82,6 +82,22 @@ describe('reporter', () => {
         });
     });
 
+    it('should report a ENOENT error while compiling, hiding the stack', () => {
+        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const outputStream = createInMemoryOutputStream();
+        const contrivedError = Object.assign(new Error('foo'), { code: 'ENOENT', hideStack: true });
+
+        compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => callback(contrivedError));
+
+        return compiler.run({
+            report: { output: outputStream },
+        })
+        .catch(() => {})
+        .then(() => {
+            expect(outputStream.getOutput()).toMatchSnapshot();
+        });
+    });
+
     it('should only display stats in the first compilation if options.stats = \'once\'', (done) => {
         const compiler = createCompiler(configBasicClient, configBasicServer);
         const outputStream = createInMemoryOutputStream();
