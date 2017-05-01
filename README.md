@@ -185,7 +185,7 @@ The option can be a boolean or an object that maps to the following options:
 
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
-| stats | Display webpack stats after each successful compilation | boolean|string | false
+| stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | false
 | statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83)
 
 
