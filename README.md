@@ -57,6 +57,8 @@ Creates an aggregated compiler that wraps both client and server webpack compile
 ```js
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 
+const clientConfig = /* ... */;
+const serverConfig = /* ... */;
 const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
 ```
 
