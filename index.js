@@ -85,3 +85,4 @@ function enhancedCompiler(...args) {
 }
 
 module.exports = enhancedCompiler;
+module.exports.reporter = reporter;

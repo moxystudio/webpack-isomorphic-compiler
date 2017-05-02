@@ -37,7 +37,7 @@ describe('.watch()', () => {
 
             compiler.watch((err, stats) => {
                 expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bserver\b/);
+                expect(err.message).toMatch(/\bserver-side\b/);
                 expect(stats).toBe(null);
                 resolve();
             });
@@ -47,7 +47,7 @@ describe('.watch()', () => {
 
             compiler.watch((err, stats) => {
                 expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bclient\b/);
+                expect(err.message).toMatch(/\bclient-side\b/);
                 expect(stats).toBe(null);
                 resolve();
             });

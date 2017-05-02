@@ -30,7 +30,7 @@ describe('.run()', () => {
                 throw new Error('Should have failed');
             }, (err) => {
                 expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bserver\b/);
+                expect(err.message).toMatch(/\bserver-side\b/);
             });
         })
         .then(() => {
@@ -41,7 +41,7 @@ describe('.run()', () => {
                 throw new Error('Should have failed');
             }, (err) => {
                 expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bclient\b/);
+                expect(err.message).toMatch(/\bclient-side\b/);
             });
         })
     ));

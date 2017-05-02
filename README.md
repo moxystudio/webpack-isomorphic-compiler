@@ -44,7 +44,7 @@ To solve the compilation part, `webpack-isomorphic-compiler` offers an aggregate
 To solve the development part, [webpack-isomorphic-dev-middleware](https://github.com/moxystudio/webpack-isomorphic-dev-middleware) offers an express middleware that integrates seamlessly with `webpack-isomorphic-compiler`.
 
 But why not use the multi-compiler mode from webpack? Glad you ask.
-Webpack's MultiCompiler doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood. For instance, it's hard to known when a compilation starts when using `.watch()`.
+Webpack's MultiCompiler doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood. For instance, it's hard to known when a compilation starts when using .watch().
 Additionally, it has some issues when used with `webpack-dev-middleware`.
 
 `webpack-isomorphic-compiler` solves the isomorphic compilation in a clear way and with a saner API.
@@ -182,13 +182,14 @@ Accessing webpack compiler public methods is NOT allowed and will throw an error
 ### Reporter
 
 Both `run()` and `watch()` accepts a `report` option that, when enabled, prints information related to the compilation process.
-
 The option can be a boolean or an object that maps to the following options:
 
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
 | stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | false
 | statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83)
+
+Additionally, you may use the reporter manually through the exported `reporter` function on the `webpack-isomorphic-compiler` module.
 
 
 ## Tests

@@ -1,8 +1,9 @@
 'use strict';
 
-const WritableStream = require('stream').Writable;
 const fs = require('fs');
+const WritableStream = require('stream').Writable;
 const escapeRegExp = require('lodash.escaperegexp');
+const webpackIsomorphicCompiler = require('../');
 const createCompiler = require('./util/createCompiler');
 const configBasicClient = require('./configs/basic-client');
 const configBasicServer = require('./configs/basic-server');
@@ -19,6 +20,10 @@ function createInMemoryOutputStream() {
         },
 
         getOutput() {
+            return output;
+        },
+
+        getReportOutput() {
             return output
             // Replace (xxxms) with (10ms)
             .replace(/\(\d+ms\)/g, '(10ms)')
@@ -44,7 +49,7 @@ describe('reporter', () => {
             report: { output: outputStream },
         })
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -61,7 +66,7 @@ describe('reporter', () => {
             if (callsCount === 1) {
                 fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
             } else {
-                expect(outputStream.getOutput()).toMatchSnapshot();
+                expect(outputStream.getReportOutput()).toMatchSnapshot();
                 done();
             }
         });
@@ -80,7 +85,7 @@ describe('reporter', () => {
             if (callsCount === 1) {
                 fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
             } else {
-                expect(outputStream.getOutput()).toMatchSnapshot();
+                expect(outputStream.getReportOutput()).toMatchSnapshot();
                 done();
             }
         });
@@ -95,7 +100,7 @@ describe('reporter', () => {
         })
         .catch(() => {})
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -113,7 +118,7 @@ describe('reporter', () => {
         })
         .catch(() => {})
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -131,7 +136,7 @@ describe('reporter', () => {
         })
         .catch(() => {})
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -149,7 +154,7 @@ describe('reporter', () => {
         })
         .catch(() => {})
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -161,7 +166,7 @@ describe('reporter', () => {
             report: { stats: true, statsOptions: { hash: true }, output: outputStream },
         })
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
     });
 
@@ -173,7 +178,7 @@ describe('reporter', () => {
             report: { stats: true, statsOptions: { hash: true }, output: outputStream },
         })
         .then(() => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
         });
 
         expect(() => compiler.run({
@@ -190,12 +195,23 @@ describe('reporter', () => {
         compiler.watch({
             report: { stats: true, statsOptions: { hash: true }, output: outputStream },
         }, () => {
-            expect(outputStream.getOutput()).toMatchSnapshot();
+            expect(outputStream.getReportOutput()).toMatchSnapshot();
             done();
         });
 
         expect(() => compiler.watch({
             report: { stats: true, statsOptions: { hash: true }, output: outputStream },
         })).toThrow(/\bidling\b/);
+    });
+
+    describe('exports', () => {
+        it('should be exported in the main module', () => {
+            expect(typeof webpackIsomorphicCompiler.reporter).toBe('function');
+        });
+
+        it('should export renderStats() & renderError()', () => {
+            expect(typeof webpackIsomorphicCompiler.reporter.renderStats).toBe('function');
+            expect(typeof webpackIsomorphicCompiler.reporter.renderError).toBe('function');
+        });
     });
 });
