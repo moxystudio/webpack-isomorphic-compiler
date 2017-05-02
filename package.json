@@ -1,6 +1,6 @@
 {
   "name": "webpack-isomorphic-compiler",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A compiler that makes your life easier if you are building isomorphic webpack powered apps, that is, single page applications with server-side rendering",
   "keywords": [
     "webpack",
