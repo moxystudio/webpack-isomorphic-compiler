@@ -118,7 +118,7 @@ exports[`reporter should report a ENOENT error while compiling, hiding the stack
 "• Compiling...
 ✖ Compilation failed
 
-    ENOENT foo
+    ENOENT: foo
 
 "
 `;
@@ -127,7 +127,7 @@ exports[`reporter should report a TypeError error while compiling 1`] = `
 "• Compiling...
 ✖ Compilation failed
 
-    TypeError foo
+    TypeError: foo
     [stack]
 
 "
