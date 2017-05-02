@@ -3,14 +3,14 @@
 const fs = require('fs');
 const delay = require('delay');
 const createCompiler = require('./util/createCompiler');
-const configBasicClient = require('./configs/basic-client');
-const configBasicServer = require('./configs/basic-server');
+const configServerClient = require('./configs/client-basic');
+const configServerBasic = require('./configs/server-basic');
 
 describe('.watch()', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should stop watching changes (sync)', (done) => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         let callsCount = 0;
 
@@ -26,7 +26,7 @@ describe('.watch()', () => {
     });
 
     it('should stop watching changes (async)', () => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         let callsCount = 0;
 
@@ -39,7 +39,7 @@ describe('.watch()', () => {
                 if (callsCount === 1) {
                     resolve(
                         compiler.unwatch()
-                        .then(() => fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry)))
+                        .then(() => fs.writeFileSync(configServerClient.entry, fs.readFileSync(configServerClient.entry)))
                     );
                 }
             });
@@ -54,7 +54,7 @@ describe('.watch()', () => {
     });
 
     it('should return a promise', () => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         compiler.watch();
 
@@ -65,7 +65,7 @@ describe('.watch()', () => {
     });
 
     it('should resolve all promises returned by unwatch if it gets called multiple times', () => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         compiler.watch();
 
@@ -75,7 +75,7 @@ describe('.watch()', () => {
     });
 
     it('should not crash if not watching', () => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         return compiler.unwatch();
     });

@@ -4,15 +4,16 @@ const pTry = require('p-try');
 const fs = require('fs');
 const Compiler = require('webpack/lib/Compiler');
 const createCompiler = require('./util/createCompiler');
-const configBasicClient = require('./configs/basic-client');
-const configBasicServer = require('./configs/basic-server');
-const configSyntaxError = require('./configs/syntax-error');
+const configServerClient = require('./configs/client-basic');
+const configServerBasic = require('./configs/server-basic');
+const configClientSyntaxError = require('./configs/client-syntax-error');
+const configServerSyntaxError = require('./configs/server-syntax-error');
 
 describe('.watch()', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should call the handler everytime a file changes', (done) => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         let callsCount = 0;
 
@@ -26,14 +27,14 @@ describe('.watch()', () => {
             if (callsCount === 2) {
                 done();
             } else {
-                fs.writeFileSync(configBasicClient.entry, fs.readFileSync(configBasicClient.entry));
+                fs.writeFileSync(configServerClient.entry, fs.readFileSync(configServerClient.entry));
             }
         });
     });
 
     it('should fail if one of the compilers fails', () => (
         pTry(() => new Promise((resolve) => {
-            const compiler = createCompiler(configBasicClient, configSyntaxError);
+            const compiler = createCompiler(configServerClient, configServerSyntaxError);
 
             compiler.watch((err, stats) => {
                 expect(err instanceof Error).toBe(true);
@@ -43,7 +44,7 @@ describe('.watch()', () => {
             });
         }))
         .then(() => new Promise((resolve) => {
-            const compiler = createCompiler(configSyntaxError, configBasicServer);
+            const compiler = createCompiler(configClientSyntaxError, configServerBasic);
 
             compiler.watch((err, stats) => {
                 expect(err instanceof Error).toBe(true);
@@ -55,7 +56,7 @@ describe('.watch()', () => {
     ));
 
     it('should fail if there\'s a fatal error', (done) => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
         const contrivedError = new Error('foo');
 
         compiler.client.webpackCompiler.plugin('watch-run', (compiler, callback) => callback(contrivedError));
@@ -67,7 +68,7 @@ describe('.watch()', () => {
     });
 
     it('should output both client & server assets', (done) => {
-        const compiler = createCompiler(configBasicClient, configBasicServer);
+        const compiler = createCompiler(configServerClient, configServerBasic);
 
         compiler.watch(() => {
             expect(fs.existsSync(`${compiler.client.webpackConfig.output.path}/client.js`)).toBe(true);
@@ -87,7 +88,7 @@ describe('.watch()', () => {
             });
         };
 
-        const compiler = createCompiler(configBasicClient, configSyntaxError);
+        const compiler = createCompiler(configServerClient, configServerSyntaxError);
 
         compiler.watch(() => {
             Compiler.prototype.watch = originalWatch;
@@ -98,7 +99,7 @@ describe('.watch()', () => {
 
     describe('args', () => {
         it('should work with .watch()', (done) => {
-            const compiler = createCompiler(configBasicClient, configBasicServer);
+            const compiler = createCompiler(configServerClient, configServerBasic);
 
             compiler
             .on('end', () => done())
@@ -107,7 +108,7 @@ describe('.watch()', () => {
         });
 
         it('should work with .watch(options)', (done) => {
-            const compiler = createCompiler(configBasicClient, configBasicServer);
+            const compiler = createCompiler(configServerClient, configServerBasic);
 
             compiler
             .on('end', () => done())
@@ -116,7 +117,7 @@ describe('.watch()', () => {
         });
 
         it('should work with .watch(options, handler)', (done) => {
-            const compiler = createCompiler(configBasicClient, configBasicServer);
+            const compiler = createCompiler(configServerClient, configServerBasic);
 
             compiler.watch({}, (err) => {
                 if (err) {
@@ -128,7 +129,7 @@ describe('.watch()', () => {
         });
 
         it('should work with .watch(handler)', (done) => {
-            const compiler = createCompiler(configBasicClient, configBasicServer);
+            const compiler = createCompiler(configServerClient, configServerBasic);
 
             compiler.watch((err) => {
                 if (err) {
@@ -140,7 +141,7 @@ describe('.watch()', () => {
         });
 
         it('should throw if not idle', () => {
-            const compiler = createCompiler(configBasicClient, configBasicServer);
+            const compiler = createCompiler(configServerClient, configServerBasic);
 
             compiler.watch();
 

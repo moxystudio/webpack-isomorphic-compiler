@@ -30,6 +30,15 @@
   "lint-staged": {
     "*.js": "eslint"
   },
+  "dependencies": {
+    "indent-string": "^3.1.0",
+    "lodash.merge": "^4.6.0",
+    "lodash.wrap": "^4.1.1",
+    "p-finally": "^1.0.0",
+    "p-settle": "^2.0.0",
+    "pretty-error": "^2.1.0",
+    "webpack": "^2.4.1"
+  },
   "devDependencies": {
     "delay": "^2.0.0",
     "eslint": "^3.19.0",
@@ -42,14 +51,6 @@
     "pify": "^2.3.0",
     "rimraf": "^2.6.1",
     "strip-ansi": "^3.0.1"
-  },
-  "dependencies": {
-    "indent-string": "^3.1.0",
-    "lodash.wrap": "^4.1.1",
-    "p-finally": "^1.0.0",
-    "p-settle": "^2.0.0",
-    "pretty-error": "^2.1.0",
-    "webpack": "^2.4.1"
   },
   "jest": {
     "modulePathIgnorePatterns": [

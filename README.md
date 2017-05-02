@@ -114,8 +114,7 @@ Available options:
 
 | Name   | Description   | Type     | Default  |
 | ------ | ------------- | -------- | -------- |
-| report | Enable reporting | boolean/[object](#reporter) | false
-
+| report | Enable reporting | boolean/[object](#reporter) | false |
 
 ### .watch([options], [handler])
 
@@ -129,9 +128,9 @@ Available options:
 
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
-| poll | Use polling instead of native watchers | boolean | false
-| aggregateTimeout | Wait so long for more changes (ms) | err | 200
-| report | Enable reporting | boolean/[object](#reporter) | false
+| poll | Use polling instead of native watchers | boolean | false |
+| aggregateTimeout | Wait so long for more changes (ms) | err | 200 |
+| report | Enable reporting | boolean/[object](#reporter) | false |
 
 ```js
 compiler.watch((err, stats) => {
@@ -186,8 +185,9 @@ The option can be a boolean or an object that maps to the following options:
 
 | Name   | Description   | Type     | Default |
 | ------ | ------------- | -------- | ------- |
-| stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | false
-| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83)
+| humanErrors | Detects human errors related to webpack configuration mistakes | boolean | true |
+| stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | true |
+| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83) |
 
 Additionally, you may use the reporter manually through the exported `reporter` function on the `webpack-isomorphic-compiler` module.
 
