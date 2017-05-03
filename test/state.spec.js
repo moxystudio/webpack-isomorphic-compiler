@@ -1,7 +1,7 @@
 'use strict';
 
 const createCompiler = require('./util/createCompiler');
-const configServerClient = require('./configs/client-basic');
+const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
@@ -9,7 +9,7 @@ describe('state', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should have correct state before and after a successful run', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         expect(compiler.isCompiling()).toBe(false);
         expect(compiler.getError()).toBe(null);
@@ -31,7 +31,7 @@ describe('state', () => {
     });
 
     it('should have correct state before and after a failed run', () => {
-        const compiler = createCompiler(configServerClient, configServerSyntaxError);
+        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
 
         expect(compiler.isCompiling()).toBe(false);
         expect(compiler.getError()).toBe(null);
@@ -53,7 +53,7 @@ describe('state', () => {
     });
 
     it('should have correct state before and after a successful watch run', (done) => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         expect(compiler.isCompiling()).toBe(false);
         expect(compiler.getError()).toBe(null);
@@ -74,7 +74,7 @@ describe('state', () => {
     });
 
     it('should have correct state before and after a failed watch run', (done) => {
-        const compiler = createCompiler(configServerClient, configServerSyntaxError);
+        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
 
         expect(compiler.isCompiling()).toBe(false);
         expect(compiler.getError()).toBe(null);

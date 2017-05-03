@@ -4,7 +4,7 @@ const fs = require('fs');
 const webpackIsomorphicCompiler = require('../');
 const createCompiler = require('./util/createCompiler');
 const createOutputStream = require('./util/createOutputStream');
-const configServerClient = require('./configs/client-basic');
+const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
@@ -12,7 +12,7 @@ describe('reporter', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should report a successful compilation', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
 
         return compiler.run({
@@ -24,7 +24,7 @@ describe('reporter', () => {
     });
 
     it('should only display stats in the first compilation if options.stats = \'once\'', (done) => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
         let callsCount = 0;
 
@@ -34,7 +34,7 @@ describe('reporter', () => {
             callsCount += 1;
 
             if (callsCount === 1) {
-                fs.writeFileSync(configServerClient.entry, fs.readFileSync(configServerClient.entry));
+                fs.writeFileSync(configClientBasic.entry, fs.readFileSync(configClientBasic.entry));
             } else {
                 expect(outputStream.getReportOutput()).toMatchSnapshot();
                 done();
@@ -43,7 +43,7 @@ describe('reporter', () => {
     });
 
     it('should not display stats if options.stats = false', (done) => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
         let callsCount = 0;
 
@@ -53,7 +53,7 @@ describe('reporter', () => {
             callsCount += 1;
 
             if (callsCount === 1) {
-                fs.writeFileSync(configServerClient.entry, fs.readFileSync(configServerClient.entry));
+                fs.writeFileSync(configClientBasic.entry, fs.readFileSync(configClientBasic.entry));
             } else {
                 expect(outputStream.getReportOutput()).toMatchSnapshot();
                 done();
@@ -62,7 +62,7 @@ describe('reporter', () => {
     });
 
     it('should report a failed compilation', () => {
-        const compiler = createCompiler(configServerClient, configServerSyntaxError);
+        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
         const outputStream = createOutputStream();
 
         return compiler.run({
@@ -75,7 +75,7 @@ describe('reporter', () => {
     });
 
     it('should report a fatal error while compiling', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
         const contrivedError = new Error('foo');
 
@@ -93,7 +93,7 @@ describe('reporter', () => {
     });
 
     it('should report a ENOENT error while compiling, hiding the stack', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
         const contrivedError = Object.assign(new Error('foo'), { code: 'ENOENT', hideStack: true });
 
@@ -111,7 +111,7 @@ describe('reporter', () => {
     });
 
     it('should report a TypeError error while compiling', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
         const contrivedError = Object.assign(new TypeError('foo'));
 
@@ -129,7 +129,7 @@ describe('reporter', () => {
     });
 
     it('should use options.statsOptions when printing stats', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
 
         return compiler.run({
@@ -141,7 +141,7 @@ describe('reporter', () => {
     });
 
     it('should dispose the created reporter if .run() throws', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
 
         const promise = compiler.run({
@@ -159,7 +159,7 @@ describe('reporter', () => {
     });
 
     it('should dispose the created reporter if .watch() throws', (done) => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const outputStream = createOutputStream();
 
         compiler.watch({
@@ -176,7 +176,7 @@ describe('reporter', () => {
 
     describe('human errors', () => {
         it('should warn about human errors', () => {
-            const compiler = createCompiler(configServerClient, configServerClient);
+            const compiler = createCompiler(configClientBasic, configClientBasic);
             const outputStream = createOutputStream();
 
             return compiler.run({
@@ -189,7 +189,7 @@ describe('reporter', () => {
         });
 
         it('should not warn about human errors if options.humanErrors = false', () => {
-            const compiler = createCompiler(configServerClient, configServerClient);
+            const compiler = createCompiler(configClientBasic, configClientBasic);
             const outputStream = createOutputStream();
 
             return compiler.run({

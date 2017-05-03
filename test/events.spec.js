@@ -1,7 +1,7 @@
 'use strict';
 
 const createCompiler = require('./util/createCompiler');
-const configServerClient = require('./configs/client-basic');
+const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
@@ -20,7 +20,7 @@ describe('events', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should emit correct events on a successful .run()', () => {
-        const { compiler, events } = createCompilerWithEvents(configServerClient, configServerBasic);
+        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
 
         return compiler.run()
         .catch(() => {})
@@ -33,7 +33,7 @@ describe('events', () => {
     });
 
     it('should emit correct events on a failed .run()', () => {
-        const { compiler, events } = createCompilerWithEvents(configServerClient, configServerSyntaxError);
+        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
 
         return compiler.run()
         .catch(() => {})
@@ -46,7 +46,7 @@ describe('events', () => {
     });
 
     it('should emit correct events on a successful .watch() cycle', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configServerClient, configServerBasic);
+        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
 
         function finish() {
             expect(events).toEqual([
@@ -63,7 +63,7 @@ describe('events', () => {
     });
 
     it('should emit correct events on a failed .watch() cycle', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configServerClient, configServerSyntaxError);
+        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
 
         function finish() {
             expect(events).toEqual([
@@ -80,7 +80,7 @@ describe('events', () => {
     });
 
     it('should emit the correct events if a compilation was canceled via .unwatch()', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configServerClient, configServerBasic);
+        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
         let error;
 
         function finish() {

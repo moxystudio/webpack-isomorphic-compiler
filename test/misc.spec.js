@@ -1,14 +1,14 @@
 'use strict';
 
 const createCompiler = require('./util/createCompiler');
-const configServerClient = require('./configs/client-basic');
+const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 
 describe('misc', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should give access to client & server webpack compiler & config', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         ['client', 'server'].forEach((type) => {
             expect(compiler[type]).toBeDefined();
@@ -20,7 +20,7 @@ describe('misc', () => {
     });
 
     it('should prevent direct access to webpack compilers main methods', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         expect(() => {
             compiler.client.webpackCompiler.run(() => {});

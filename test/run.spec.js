@@ -4,7 +4,7 @@ const pTry = require('p-try');
 const fs = require('fs');
 const Compiler = require('webpack/lib/Compiler');
 const createCompiler = require('./util/createCompiler');
-const configServerClient = require('./configs/client-basic');
+const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configClientSyntaxError = require('./configs/client-syntax-error');
 const configServerSyntaxError = require('./configs/server-syntax-error');
@@ -13,7 +13,7 @@ describe('.run()', () => {
     afterEach(() => createCompiler.teardown());
 
     it('should fulfill with client & server stats', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         return compiler.run()
         .then((stats) => {
@@ -24,7 +24,7 @@ describe('.run()', () => {
 
     it('should fail if one of the compilers fails', () => (
         pTry(() => {
-            const compiler = createCompiler(configServerClient, configServerSyntaxError);
+            const compiler = createCompiler(configClientBasic, configServerSyntaxError);
 
             return compiler.run()
             .then(() => {
@@ -48,7 +48,7 @@ describe('.run()', () => {
     ));
 
     it('should fail if there\'s a fatal error', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
         const contrivedError = new Error('foo');
 
         compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
@@ -64,7 +64,7 @@ describe('.run()', () => {
     });
 
     it('should output both client & server assets', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         return compiler.run()
         .then(() => {
@@ -84,7 +84,7 @@ describe('.run()', () => {
             });
         };
 
-        const compiler = createCompiler(configServerClient, configServerSyntaxError);
+        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
 
         return compiler.run()
         .then(() => {
@@ -97,7 +97,7 @@ describe('.run()', () => {
     });
 
     it('should throw if not idle', () => {
-        const compiler = createCompiler(configServerClient, configServerBasic);
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
         const promise = compiler.run()
         .catch(() => {});
