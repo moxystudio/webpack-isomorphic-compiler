@@ -1,7 +1,7 @@
 'use strict';
 
-const pTry = require('p-try');
 const fs = require('fs');
+const pTry = require('p-try');
 const Compiler = require('webpack/lib/Compiler');
 const createCompiler = require('./util/createCompiler');
 const configClientBasic = require('./configs/client-basic');

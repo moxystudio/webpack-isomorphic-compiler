@@ -151,6 +151,30 @@ Stops watching for changes.
 Returns a promise that fulfills when done.
 
 
+### .resolve()
+
+Resolves the compiler result.
+
+The promise gets immediately resolved if the compiler has finished or failed.  
+Otherwise waits for a compilation to be done before resolving the promise.
+
+```js
+compiler.resolve()
+.then((stats) => {
+    // stats = {
+    //   client,
+    //   server,
+    // }
+})
+.catch((err) => {
+    // err = {
+    //   message: 'Error message',
+    //   [stats]: <webpack-stats>
+    // }
+});
+```
+
+
 ### .isCompiling()
 
 Returns a boolean indicating if the code is being compiled.
