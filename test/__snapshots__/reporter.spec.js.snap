@@ -1,10 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`reporter human errors should not warn about human errors if options.humanErrors = false 1`] = `
-"WARN: Server target in webpack config should be set to \`this\` or \`commonjs2\`
-See https://webpack.js.org/configuration/output/#output-librarytarget
-
-• Compiling...
+"• Compiling...
 ✓ Compilation succeeded (10ms)
 
      CLIENT                             
@@ -20,9 +17,13 @@ See https://webpack.js.org/configuration/output/#output-librarytarget
 "
 `;
 
-exports[`reporter human errors should warn about human errors 1`] = `
-"WARN: Server target in webpack config should be set to \`this\` or \`commonjs2\`
+exports[`reporter human errors should warn about all human errors 1`] = `
+"WARN: Server \`output.target\` in webpack config should be set to \`node\`
+See https://webpack.js.org/configuration/target/#target
+WARN: Server \`output.libraryTarget\` in webpack config should be set to \`this\` or \`commonjs2\`
 See https://webpack.js.org/configuration/output/#output-librarytarget
+WARN: Server \`devtool\` in webpack config should be set to \`source-map\` or \`inline-source-map\`
+In addition, you must use https://github.com/evanw/node-source-map-support to enable source maps.
 
 • Compiling...
 ✓ Compilation succeeded (10ms)
@@ -34,7 +35,7 @@ See https://webpack.js.org/configuration/output/#output-librarytarget
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset    Size  Chunks             Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
 "

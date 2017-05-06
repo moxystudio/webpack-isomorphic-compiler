@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const mergeOptions = require('merge-options');
 const webpackIsomorphicCompiler = require('../');
 const createCompiler = require('./util/createCompiler');
 const createOutputStream = require('./util/createOutputStream');
@@ -175,8 +176,12 @@ describe('reporter', () => {
     });
 
     describe('human errors', () => {
-        it('should warn about human errors', () => {
-            const compiler = createCompiler(configClientBasic, configClientBasic);
+        it('should warn about all human errors', () => {
+            const badServerConfig = mergeOptions({}, configClientBasic, {
+                devtool: 'eval-source-map',
+            });
+
+            const compiler = createCompiler(configClientBasic, badServerConfig);
             const outputStream = createOutputStream();
 
             return compiler.run({
