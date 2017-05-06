@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`reporter exports should support enderError() without statsOptions 1`] = `
+exports[`reporter exports should support renderError() without statsOptions 1`] = `
 "Webpack server-side compilation failed
 
 [1m[31mERROR in ./test/configs/files/syntax-error.js
