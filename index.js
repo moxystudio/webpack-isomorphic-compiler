@@ -22,51 +22,44 @@ function withSecuredWebpack(compiler) {
 }
 
 function withReporter(compiler) {
-    let stopReporting;
-
-    function disposeReporter() {
-        stopReporting && stopReporting();
-        stopReporting = null;
-    }
-
-    function assignReporter(stop) {
-        disposeReporter();
-        stopReporting = stop;
-    }
-
     compiler.run = wrap(compiler.run, (run, options) => {
-        const stop = options && options.report && reporter(compiler, options.report);
+        const stopReporting = options && options.report && reporter(compiler, options.report);
 
         try {
-            const ret = pFinally(run(), disposeReporter);
-
-            assignReporter(stop);
-
-            return ret;
+            return pFinally(run(), stopReporting);
         } catch (err) {
-            stop && stop();
+            stopReporting && stopReporting();
             throw err;
         }
     });
 
-    compiler.watch = wrap(compiler.watch, (watch, options, handler) => {
-        const stop = options && options.report && reporter(compiler, options.report);
+    {
+        let stopReporting = null;
 
-        try {
-            const ret = watch(options, handler);
+        compiler.watch = wrap(compiler.watch, (watch, options, handler) => {
+            stopReporting = options && options.report && reporter(compiler, options.report);
 
-            assignReporter(stop);
+            try {
+                return watch(options, handler);
+            } catch (err) {
+                if (stopReporting) {
+                    stopReporting();
+                    stopReporting = null;
+                }
 
-            return ret;
-        } catch (err) {
-            stop && stop();
-            throw err;
-        }
-    });
+                throw err;
+            }
+        });
 
-    compiler.unwatch = wrap(compiler.unwatch, (unwatch) => (
-        pFinally(unwatch(), disposeReporter)
-    ));
+        compiler.unwatch = wrap(compiler.unwatch, (unwatch) => (
+            pFinally(unwatch(), () => {
+                if (stopReporting) {
+                    stopReporting();
+                    stopReporting = null;
+                }
+            })
+        ));
+    }
 }
 
 // --------------------------------------------
