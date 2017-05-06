@@ -240,7 +240,9 @@ describe('reporter', () => {
             .then(() => {
                 throw new Error('Should have failed');
             }, (err) => {
-                expect(webpackIsomorphicCompiler.reporter.renderError(err)).toMatchSnapshot();
+                const renderedErr = webpackIsomorphicCompiler.reporter.renderError(err);
+
+                expect(createOutputStream.normalizeReporterOutput(renderedErr)).toMatchSnapshot();
             });
         });
     });

@@ -3,12 +3,12 @@
 exports[`reporter exports should support renderError() without statsOptions 1`] = `
 "Webpack server-side compilation failed
 
-[1m[31mERROR in ./test/configs/files/syntax-error.js
-Module parse failed: /Users/andrecruz/Work/moxy/moxy/webpack-isomorphic-compiler/test/configs/files/syntax-error.js Unexpected token (4:0)
+ERROR in ./test/configs/files/syntax-error.js
+Module parse failed: test/configs/files/syntax-error.js Unexpected token (4:0)
 You may need an appropriate loader to handle this file type.
 | 
 | console.log('Hello!'
-| [39m[22m
+| 
 "
 `;
 
