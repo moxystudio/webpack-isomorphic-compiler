@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const mergeOptions = require('merge-options');
+const merge = require('lodash.merge');
 const webpackIsomorphicCompiler = require('../');
 const createCompiler = require('./util/createCompiler');
 const createOutputStream = require('./util/createOutputStream');
@@ -175,9 +175,11 @@ describe('reporter', () => {
         })).toThrow(/\bidling\b/);
     });
 
+    it('should calculate duration correctly if only one of the compilers actually run');
+
     describe('human errors', () => {
         it('should warn about all human errors', () => {
-            const badServerConfig = mergeOptions({}, configClientBasic, {
+            const badServerConfig = merge({}, configClientBasic, {
                 devtool: 'eval-source-map',
             });
 
