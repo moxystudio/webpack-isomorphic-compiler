@@ -35,8 +35,8 @@ Webpack offers a multi-compiler that makes this easier, but unfortunately it doe
 
 This module packs an aggregated compiler which syncs up the client & server compilation and:
 
-- Has clear and saner API
-- Warns about things that might be wrong with your webpack configs
+- Has a clearer and saner API
+- Warns about mistakes within your webpack configs
 - Has [beautiful](http://i.imgur.com/rgy7QcT.gif) [reporting](#reporter)
 
 
