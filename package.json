@@ -22,9 +22,9 @@
   "scripts": {
     "lint": "eslint .",
     "lint:staged": "lint-staged",
-    "test": "jest --env node --coverage && rimraf test/tmp",
+    "test": "jest --env node --coverage",
     "test:watch": "jest --env node --watch",
-    "posttest": "npm run lint",
+    "posttest": "rimraf test/tmp && npm run lint",
     "precommit": "npm run lint:staged"
   },
   "lint-staged": {

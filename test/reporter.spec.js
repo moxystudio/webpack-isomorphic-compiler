@@ -217,5 +217,31 @@ describe('reporter', () => {
             expect(typeof webpackIsomorphicCompiler.reporter.renderError).toBe('function');
             expect(typeof webpackIsomorphicCompiler.reporter.getOptions).toBe('function');
         });
+
+        it('should support renderStats() without statsOptions', () => {
+            const compiler = createCompiler(configClientBasic, configServerBasic);
+            const outputStream = createOutputStream();
+
+            return compiler.run({
+                report: { output: outputStream },
+            })
+            .then((stats) => {
+                expect(webpackIsomorphicCompiler.reporter.renderStats(stats.client)).toMatchSnapshot();
+            });
+        });
+
+        it('should support renderError() without statsOptions', () => {
+            const compiler = createCompiler(configClientBasic, configServerSyntaxError);
+            const outputStream = createOutputStream();
+
+            return compiler.run({
+                report: { output: outputStream },
+            })
+            .then(() => {
+                throw new Error('Should have failed');
+            }, (err) => {
+                expect(webpackIsomorphicCompiler.reporter.renderError(err)).toMatchSnapshot();
+            });
+        });
     });
 });

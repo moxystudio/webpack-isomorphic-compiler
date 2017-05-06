@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`reporter exports should support enderError() without statsOptions 1`] = `
+"Webpack server-side compilation failed
+
+[1m[31mERROR in ./test/configs/files/syntax-error.js
+Module parse failed: /Users/andrecruz/Work/moxy/moxy/webpack-isomorphic-compiler/test/configs/files/syntax-error.js Unexpected token (4:0)
+You may need an appropriate loader to handle this file type.
+| 
+| console.log('Hello!'
+| [39m[22m
+"
+`;
+
+exports[`reporter exports should support renderStats() without statsOptions 1`] = `
+"[1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
+[1m[32mclient.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+"
+`;
+
 exports[`reporter human errors should not warn about human errors if options.humanErrors = false 1`] = `
 "• Compiling...
 ✓ Compilation succeeded (10ms)
