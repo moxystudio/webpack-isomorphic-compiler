@@ -33,7 +33,11 @@ To make it right, the client and server compilers must be in sync and live in pe
 
 Webpack offers a multi-compiler that makes this easier, but unfortunately it doesn't have all the plugin handlers that a single compiler does. This makes it difficult to know what's happening under the hood.
 
-This module packs an aggregated compiler which syncs up the client and server compilation, and has clear and saner API.
+This module packs an aggregated compiler which syncs up the client & server compilation and:
+
+- Has clear and saner API
+- Warns about things that might be wrong with your webpack configs
+- Has [beautiful](http://i.imgur.com/rgy7QcT.gif) [reporting](#reporter)
 
 
 ## API
