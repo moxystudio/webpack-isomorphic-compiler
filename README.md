@@ -28,40 +28,35 @@ The current version only works with webpack v2.x.x.
 
 ## Motivation
 
-Building applications powered by webpack with server-side rendering (isomorphic/universal apps) is hard:
+Applications powered by webpack with server-side rendering means building both client and server.   
+To make it right, the client and server compilers must be in sync and live in perfect harmony.
 
-- When making a production build, you must compile both the client and server
-- When developing, we want to rebuild the client & server whenever code changes and offer hot module replacement
+Webpack offers a multi-compiler that kind of makes this easier but unfortunately it doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood.
 
-This is complex, especially setting up the development server:
-
-- You must wait for both compilers to finish, delaying the server responses until then
-- If the client or server compilation fails, an error page should be served
-- When the server compilations succeeds, we must re-require our server bundle to get its new exports
-- The client and server compilers must be in sync and live in perfect harmony
-
-To solve the compilation part, `webpack-isomorphic-compiler` offers an aggregated compiler that syncs up the client and server compilation.
-To solve the development part, [webpack-isomorphic-dev-middleware](https://github.com/moxystudio/webpack-isomorphic-dev-middleware) offers an express middleware that integrates seamlessly with `webpack-isomorphic-compiler`.
-
-But why not use the multi-compiler mode from webpack? Glad you ask.
-Webpack's MultiCompiler doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood. For instance, it's hard to known when a compilation starts when using .watch().
-Additionally, it has some issues when used with `webpack-dev-middleware`.
-
-`webpack-isomorphic-compiler` solves the isomorphic compilation in a clear way and with a saner API.
+This module effectively offers an aggregated compiler, which syncs up the client and server compilation, and has clear and saner API.
 
 
 ## API
 
-**webpackIsomorphicCompiler(clientConfig, serverConfig)**
+**webpackIsomorphicCompiler(clientCompiler, serverCompiler)**
 
 Creates an aggregated compiler that wraps both client and server webpack compilers.   
 
 ```js
+const webpack = require('webpack');
 const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
 
-const clientConfig = /* ... */;
-const serverConfig = /* ... */;
-const compiler = webpackIsomorphicCompiler(clientConfig, serverConfig);
+const clientCompiler = webpack(/* client config */);
+const serverCompiler =  webpack(/* server config */);
+const compiler = webpackIsomorphicCompiler(clientCompiler, serverCompiler);
+```
+
+Alternatively, you may pass a config directly instead of a webpack compiler:
+
+```js
+const webpack = require('webpack');
+
+const compiler = webpackIsomorphicCompiler(/* client config */, /* server config */);
 ```
 
 The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html) and emits the following events:

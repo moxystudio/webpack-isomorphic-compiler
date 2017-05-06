@@ -1,5 +1,7 @@
 'use strict';
 
+const webpack = require('webpack');
+const isomorphicCompiler = require('../');
 const createCompiler = require('./util/createCompiler');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
@@ -25,5 +27,19 @@ describe('misc', () => {
         expect(() => {
             compiler.client.webpackCompiler.run(() => {});
         }).toThrow(/\bpublic API\b/);
+    });
+
+    it('should allow passing compilers instead of configs', () => {
+        const clientCompiler = webpack(createCompiler.uniquifyConfig(configClientBasic));
+        const serverCompiler = webpack(createCompiler.uniquifyConfig(configServerBasic));
+        const compiler = isomorphicCompiler(clientCompiler, serverCompiler);
+
+        createCompiler.push(compiler);
+
+        return compiler.run()
+        .then((stats) => {
+            expect(stats.client.toJson().assetsByChunkName).toEqual({ main: 'client.js' });
+            expect(stats.server.toJson().assetsByChunkName).toEqual({ main: 'server.js' });
+        });
     });
 });
