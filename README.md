@@ -28,10 +28,10 @@ The current version only works with webpack v2.x.x.
 
 ## Motivation
 
-Applications powered by webpack with server-side rendering means building both client and server.   
+Applications powered by webpack with server-side rendering means compiling both the client and the server.   
 To make it right, the client and server compilers must be in sync and live in perfect harmony.
 
-Webpack offers a multi-compiler that kind of makes this easier but unfortunately it doesn't offer all the plugin handlers that a single Compiler does, which makes it difficult to know what's happening under the hood.
+Webpack offers a multi-compiler that makes this easier but unfortunately it doesn't offer all the plugin handlers that a single compiler does, which makes it difficult to know what's happening under the hood.
 
 This module effectively offers an aggregated compiler, which syncs up the client and server compilation, and has clear and saner API.
 
