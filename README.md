@@ -11,7 +11,7 @@
 [codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/webpack-isomorphic-compiler/master.svg
 [david-dm-url]:https://david-dm.org/moxystudio/webpack-isomorphic-compiler
 [david-dm-image]:https://img.shields.io/david/moxystudio/webpack-isomorphic-compiler.svg
-[david-dm-dev-url]:https://david-dm.org/moxystudio/webpack-isomorphic-compiler#info=devDependencies
+[david-dm-dev-url]:https://david-dm.org/moxystudio/webpack-isomorphic-compiler?type=dev
 [david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/webpack-isomorphic-compiler.svg
 [greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/webpack-isomorphic-compiler.svg
 [greenkeeper-url]:https://greenkeeper.io
