@@ -13,8 +13,8 @@ You may need an appropriate loader to handle this file type.
 `;
 
 exports[`reporter exports should support renderStats() without statsOptions 1`] = `
-"[1mAsset[39m[22m     [1mSize[39m[22m  [1mChunks[39m[22m  [1m[39m[22m           [1m[39m[22m[1mChunk Names[39m[22m
-[1m[32mclient.js[39m[22m  2.69 kB       [1m0[39m[22m  [1m[32m[emitted][39m[22m  main
+"Asset Size Chunks Chunk Names
+client.js  x.xx kB       0  [emitted]  main
 "
 `;
 
@@ -24,12 +24,12 @@ exports[`reporter human errors should not warn about human errors if options.hum
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
 "
@@ -48,12 +48,12 @@ In addition, you must use https://github.com/evanw/node-source-map-support to en
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset    Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
 "
@@ -65,12 +65,12 @@ exports[`reporter should dispose the created reporter if .run() throws 1`] = `
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 "
@@ -82,12 +82,12 @@ exports[`reporter should dispose the created reporter if .watch() throws 1`] = `
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 "
@@ -99,12 +99,12 @@ exports[`reporter should not display stats if options.stats = false 1`] = `
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 • Compiling...
@@ -119,12 +119,12 @@ exports[`reporter should only display stats in the first compilation if options.
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 • Compiling...
@@ -184,12 +184,12 @@ exports[`reporter should report a successful compilation 1`] = `
 
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Asset     Size  Chunks             Chunk Names
+    Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 "
@@ -202,13 +202,13 @@ exports[`reporter should use options.statsOptions when printing stats 1`] = `
      CLIENT                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hash: a15ebe812cb1f543fee8
-        Asset     Size  Chunks             Chunk Names
+        Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
 
      SERVER                             
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Hash: 6d89c4db2970e36fc5c3
-        Asset     Size  Chunks             Chunk Names
+        Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
 
 "

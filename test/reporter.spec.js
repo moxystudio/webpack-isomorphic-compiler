@@ -228,7 +228,9 @@ describe('reporter', () => {
                 report: { output: outputStream },
             })
             .then((stats) => {
-                expect(webpackIsomorphicCompiler.reporter.renderStats(stats.client)).toMatchSnapshot();
+                const renderedStats = webpackIsomorphicCompiler.reporter.renderStats(stats.client);
+
+                expect(createOutputStream.normalizeReporterOutput(renderedStats)).toMatchSnapshot();
             });
         });
 
