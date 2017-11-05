@@ -4,7 +4,7 @@ exports[`reporter exports should support renderError() without statsOptions 1`] 
 "Webpack server-side compilation failed
 
 ERROR in ./test/configs/files/syntax-error.js
-Module parse failed: test/configs/files/syntax-error.js Unexpected token (4:0)
+Module parse failed: Unexpected token (4:0)
 You may need an appropriate loader to handle this file type.
 | 
 | console.log('Hello!'
@@ -159,7 +159,7 @@ exports[`reporter should report a failed compilation 1`] = `
     Webpack server-side compilation failed
 
     ERROR in ./test/configs/files/syntax-error.js
-    Module parse failed: test/configs/files/syntax-error.js Unexpected token (4:0)
+    Module parse failed: Unexpected token (4:0)
     You may need an appropriate loader to handle this file type.
     | 
     | console.log('Hello!'
