@@ -31,7 +31,6 @@ exports[`reporter human errors should not warn about human errors if options.hum
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
-
 "
 `;
 
@@ -55,7 +54,6 @@ In addition, you must use https://github.com/evanw/node-source-map-support to en
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     client.js  x.xx kB       0  [emitted]  main
-
 "
 `;
 
@@ -72,7 +70,6 @@ exports[`reporter should dispose the created reporter if .run() throws 1`] = `
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 "
 `;
 
@@ -89,7 +86,6 @@ exports[`reporter should dispose the created reporter if .watch() throws 1`] = `
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 "
 `;
 
@@ -106,7 +102,6 @@ exports[`reporter should not display stats if options.stats = false 1`] = `
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 • Compiling...
 ✓ Compilation succeeded (10ms)
 
@@ -126,7 +121,6 @@ exports[`reporter should only display stats in the first compilation if options.
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 • Compiling...
 ✓ Compilation succeeded (10ms)
 
@@ -191,7 +185,6 @@ exports[`reporter should report a successful compilation 1`] = `
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 "
 `;
 
@@ -210,6 +203,5 @@ exports[`reporter should use options.statsOptions when printing stats 1`] = `
     Hash: 6d89c4db2970e36fc5c3
         Asset Size Chunks Chunk Names
     server.js  x.xx kB       0  [emitted]  main
-
 "
 `;
