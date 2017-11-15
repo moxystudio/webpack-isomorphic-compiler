@@ -45,7 +45,7 @@
   "devDependencies": {
     "delay": "^2.0.0",
     "eslint": "^4.0.0",
-    "eslint-config-moxy": "^3.0.0",
+    "eslint-config-moxy": "^4.0.0",
     "husky": "^0.14.0",
     "jest": "^21.0.0",
     "lint-staged": "^5.0.0",
