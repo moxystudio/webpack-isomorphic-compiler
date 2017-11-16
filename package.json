@@ -21,14 +21,27 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "lint:staged": "lint-staged",
     "test": "jest --env node --coverage",
-    "test:watch": "jest --env node --watch",
-    "posttest": "rimraf test/tmp && npm run lint",
-    "precommit": "npm run lint:staged"
+    "prerelease": "npm t && npm run lint",
+    "release": "standard-version",
+    "precommit": "lint-staged",
+    "commitmsg": "commitlint -e $GIT_PARAMS"
+  },
+  "standard-version": {
+    "scripts": {
+      "posttag": "git push --follow-tags origin master && npm publish"
+    }
   },
   "lint-staged": {
-    "*.js": "eslint"
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ]
   },
   "peerDependencies": {
     "webpack": ">=2.0.0 <4.0.0"
@@ -43,6 +56,8 @@
     "pretty-error": "^2.1.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^4.3.0",
+    "@commitlint/config-angular": "^4.3.0",
     "delay": "^2.0.0",
     "eslint": "^4.0.0",
     "eslint-config-moxy": "^3.0.0",
@@ -53,6 +68,7 @@
     "p-try": "^1.0.0",
     "pify": "^3.0.0",
     "rimraf": "^2.6.1",
+    "standard-version": "^4.2.0",
     "strip-ansi": "^4.0.0",
     "webpack": "^3.0.0"
   },

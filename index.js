@@ -64,7 +64,7 @@ function withReporter(compiler) {
 
 // --------------------------------------------
 
-function enhancedCompiler(...args) {
+function webpackIsomorphicCompiler(...args) {
     const compiler = createCompiler(...args);
 
     // Secure webpack access by prevent calling its public methods because of race-conditions
@@ -77,5 +77,5 @@ function enhancedCompiler(...args) {
     return compiler;
 }
 
-module.exports = enhancedCompiler;
+module.exports = webpackIsomorphicCompiler;
 module.exports.reporter = reporter;

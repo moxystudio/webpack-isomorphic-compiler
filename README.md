@@ -218,7 +218,7 @@ Additionally, you may use the reporter manually through the exported `reporter` 
 ## Tests
 
 `$ npm test`   
-`$ npm test:watch` during development
+`$ npm test -- --watch` during development
 
 
 ## License
