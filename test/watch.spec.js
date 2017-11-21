@@ -55,8 +55,7 @@ describe('.watch()', () => {
         }))
     ));
 
-    // This test must be skipped until https://github.com/webpack/webpack/pull/4828 lands
-    it.skip('should fail if there\'s a fatal error', (done) => {
+    it('should fail if there\'s a fatal error', (done) => {
         const compiler = createCompiler(configClientBasic, configServerBasic);
         const contrivedError = new Error('foo');
 
