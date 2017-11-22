@@ -60,7 +60,7 @@
     "pretty-error": "^2.1.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^4.3.0",
+    "@commitlint/cli": "^5.0.1",
     "@commitlint/config-angular": "^4.3.0",
     "delay": "^2.0.0",
     "eslint": "^4.0.0",
