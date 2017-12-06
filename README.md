@@ -211,6 +211,7 @@ The option can be a boolean or an object that maps to the following options:
 | humanErrors | Detects human errors related to webpack configuration mistakes | boolean | true |
 | stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | true |
 | statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83) |
+| output | The target stream of the logs | WritableStream | process.stderr | 
 
 Additionally, you may use the reporter manually through the exported `reporter` function on the `webpack-isomorphic-compiler` module.
 
