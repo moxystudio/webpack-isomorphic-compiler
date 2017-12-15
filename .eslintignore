@@ -1,4 +1,3 @@
 coverage/
 test/tmp/
 test/configs/files/
-test/__snapshots__
