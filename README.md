@@ -39,7 +39,7 @@ This module packs an aggregated compiler which syncs up the client & server comp
 - Warns about mistakes within your webpack configs
 - Has 100% API compatibility with [webpack-sane-compiler](https://github.com/moxystudio/webpack-sane-compiler), allowing you to use its [reporter](https://github.com/moxystudio/webpack-sane-compiler-reporter) and [notifier](https://github.com/moxystudio/webpack-sane-compiler-notifier)
 
-*NOTE*: While `webpack-sane-compiler-reporter` is compatible with this compiler, we advise using [https://github.com/moxystudio/webpack-isomorphic-compiler-reporter] instead for completeness and accurateness.
+*NOTE*: While `webpack-sane-compiler-reporter` is compatible with this compiler, we advise using [webpack-isomorphic-compiler-reporter](https://github.com/moxystudio/webpack-isomorphic-compiler-reporter) instead for completeness and accurateness.
 
 
 ## Usage
