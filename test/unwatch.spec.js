@@ -1,82 +1,73 @@
 'use strict';
 
-const fs = require('fs');
 const delay = require('delay');
 const createCompiler = require('./util/createCompiler');
+const touchFile = require('./util/touchFile');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 
-describe('.watch()', () => {
-    afterEach(() => createCompiler.teardown());
+afterEach(() => createCompiler.teardown());
 
-    it('should stop watching changes (sync)', (done) => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
+it('should return a promise', () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
 
-        let callsCount = 0;
+    compiler.watch();
 
-        const unwatchPromise = compiler
-        .watch(() => { callsCount += 1; })
-        .unwatch();
+    const promise = compiler.unwatch();
 
-        return Promise.all([unwatchPromise, delay(2000)])
-        .then(() => {
-            expect(callsCount).toBe(0);
-            done();
+    expect(promise).toBeDefined();
+    expect(promise instanceof Promise).toBe(true);
+});
+
+it('should stop watching changes (sync)', async () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
+
+    let callsCount = 0;
+
+    const unwatchPromise = compiler
+    .watch(() => { callsCount += 1; })
+    .unwatch();
+
+    await Promise.all([unwatchPromise, delay(2000)]);
+
+    expect(callsCount).toBe(0);
+});
+
+it('should stop watching changes (async)', async () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
+
+    let callsCount = 0;
+
+    // Watch changes & wait
+    // When done, unwatch & modify files
+    await new Promise((resolve) => {
+        compiler.watch(() => {
+            callsCount += 1;
+
+            if (callsCount === 1) {
+                resolve(compiler.unwatch().then(() => touchFile(configClientBasic.entry)));
+            }
         });
     });
 
-    it('should stop watching changes (async)', () => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
+    // At this point, `callsCount` should remain 1
+    await delay(2000);
 
-        let callsCount = 0;
+    expect(callsCount).toBe(1);
+});
 
-        // Watch changes & wait
-        // When done, unwatch & modify files
-        return new Promise((resolve) => {
-            compiler.watch(() => {
-                callsCount += 1;
+it('should resolve all promises returned by unwatch if it gets called multiple times', () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
 
-                if (callsCount === 1) {
-                    resolve(
-                        compiler.unwatch()
-                        .then(() => fs.writeFileSync(configClientBasic.entry, fs.readFileSync(configClientBasic.entry)))
-                    );
-                }
-            });
-        })
-        // At this point, `callsCount` should remain 1
-        .then(() => (
-            delay(2000)
-            .then(() => {
-                expect(callsCount).toBe(1);
-            })
-        ));
-    });
+    compiler.watch();
 
-    it('should return a promise', () => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
+    const promises = [compiler.unwatch(), compiler.unwatch()];
 
-        compiler.watch();
+    return Promise.all([promises]);
+});
 
-        const promise = compiler.unwatch();
+it('should not crash if not watching', () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
 
-        expect(promise).toBeDefined();
-        expect(typeof promise.then).toBe('function');
-    });
-
-    it('should resolve all promises returned by unwatch if it gets called multiple times', () => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
-
-        compiler.watch();
-
-        const promises = [compiler.unwatch(), compiler.unwatch()];
-
-        return Promise.all([promises]);
-    });
-
-    it('should not crash if not watching', () => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
-
-        return compiler.unwatch();
-    });
+    return compiler.unwatch();
 });

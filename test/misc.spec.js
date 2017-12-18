@@ -29,17 +29,16 @@ describe('misc', () => {
         }).toThrow(/\bpublic API\b/);
     });
 
-    it('should allow passing compilers instead of configs', () => {
+    it('should allow passing compilers instead of configs', async () => {
         const clientCompiler = webpack(createCompiler.uniquifyConfig(configClientBasic));
         const serverCompiler = webpack(createCompiler.uniquifyConfig(configServerBasic));
         const compiler = isomorphicCompiler(clientCompiler, serverCompiler);
 
         createCompiler.push(compiler);
 
-        return compiler.run()
-        .then((stats) => {
-            expect(stats.client.toJson().assetsByChunkName).toEqual({ main: 'client.js' });
-            expect(stats.server.toJson().assetsByChunkName).toEqual({ main: 'server.js' });
-        });
+        const { clientStats, serverStats } = await compiler.run();
+
+        expect(clientStats.toJson().assetsByChunkName).toEqual({ main: 'client.js' });
+        expect(serverStats.toJson().assetsByChunkName).toEqual({ main: 'server.js' });
     });
 });

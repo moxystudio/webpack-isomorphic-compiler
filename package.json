@@ -51,13 +51,9 @@
     "webpack": ">=2.0.0 <4.0.0"
   },
   "dependencies": {
-    "indent-string": "^3.1.0",
-    "lodash.merge": "^4.6.0",
-    "lodash.wrap": "^4.1.1",
     "p-defer": "^1.0.0",
-    "p-finally": "^1.0.0",
     "p-settle": "^2.0.0",
-    "pretty-error": "^2.1.0"
+    "webpack-sane-compiler": "^2.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^5.0.1",

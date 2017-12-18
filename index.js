@@ -1,81 +1,121 @@
 'use strict';
 
-const wrap = require('lodash.wrap');
-const pFinally = require('p-finally');
-const createCompiler = require('./lib/compiler');
-const reporter = require('./lib/reporter');
+const pSettle = require('p-settle');
+const pDefer = require('p-defer');
+const webpackSaneCompiler = require('webpack-sane-compiler');
+const observeCompilers = require('./lib/observeCompilers');
 
-function withSecuredWebpack(compiler) {
-    ['client', 'server'].forEach((type) => {
-        const blacklistedProperties = ['run', 'watch'];
-
-        compiler[type].webpackCompiler = new Proxy(compiler[type].webpackCompiler, {
-            get(target, property) {
-                if (blacklistedProperties.includes(property)) {
-                    throw new Error('Direct access to webpack compiler\'s public API is not allowed');
-                }
-
-                return target[property];
-            },
-        });
-    });
+function createSubFacade(saneCompiler) {
+    return {
+        webpackConfig: saneCompiler.webpackConfig,
+        webpackCompiler: saneCompiler.webpackCompiler,
+    };
 }
 
-function withReporter(compiler) {
-    compiler.run = wrap(compiler.run, (run, options) => {
-        const stopReporting = options && options.report && reporter(compiler, options.report);
+function compiler(client, server) {
+    const clientCompiler = webpackSaneCompiler(client);
+    const serverCompiler = webpackSaneCompiler(server);
+    const { eventEmitter, state } = observeCompilers(clientCompiler, serverCompiler);
 
-        try {
-            return pFinally(run(), stopReporting);
-        } catch (err) {
-            stopReporting && stopReporting();
-            throw err;
-        }
-    });
+    const compiler = Object.assign(eventEmitter, {
+        client: createSubFacade(clientCompiler),
+        server: createSubFacade(serverCompiler),
 
-    {
-        let stopReporting = null;
+        isCompiling() {
+            return state.isCompiling;
+        },
 
-        compiler.watch = wrap(compiler.watch, (watch, options, handler) => {
-            stopReporting = options && options.report && reporter(compiler, options.report);
+        getCompilation() {
+            return state.compilation;
+        },
 
-            try {
-                return watch(options, handler);
-            } catch (err) {
-                if (stopReporting) {
-                    stopReporting();
-                    stopReporting = null;
+        getError() {
+            return state.error;
+        },
+
+        run() {
+            clientCompiler.assertIdle();
+            serverCompiler.assertIdle();
+
+            return pSettle([
+                clientCompiler.run(),
+                serverCompiler.run(),
+            ])
+            .then(() => {
+                if (state.error) {
+                    throw state.error;
                 }
 
-                throw err;
+                return state.compilation;
+            });
+        },
+
+        watch(options, handler) {
+            clientCompiler.assertIdle();
+            serverCompiler.assertIdle();
+
+            if (typeof options === 'function') {
+                handler = options;
+                options = null;
             }
-        });
 
-        compiler.unwatch = wrap(compiler.unwatch, (unwatch) => (
-            pFinally(unwatch(), () => {
-                if (stopReporting) {
-                    stopReporting();
-                    stopReporting = null;
-                }
-            })
-        ));
-    }
-}
+            function baseHandler() {
+                !state.isCompiling && handler(state.error, state.compilation);
+            }
 
-// --------------------------------------------
+            clientCompiler.watch(options, handler && baseHandler);
+            serverCompiler.watch(options, handler && baseHandler);
 
-function webpackIsomorphicCompiler(...args) {
-    const compiler = createCompiler(...args);
+            return compiler;
+        },
 
-    // Secure webpack access by prevent calling its public methods because of race-conditions
-    // Users should always use our compiler methods!
-    withSecuredWebpack(compiler);
+        unwatch() {
+            return Promise.all([
+                clientCompiler.unwatch(),
+                serverCompiler.unwatch(),
+            ])
+            .then(() => {});
+        },
 
-    // Add reporting functionality
-    withReporter(compiler);
+        resolve() {
+            const { error, compilation } = state;
+
+            // Already resolved?
+            if (error) {
+                return Promise.reject(error);
+            }
+
+            if (compilation) {
+                return Promise.resolve(compilation);
+            }
+
+            // Wait for it to be resolved
+            const deferred = pDefer();
+
+            function cleanup() {
+                eventEmitter.removeListener('error', onError);
+                eventEmitter.removeListener('end', onEnd);
+            }
+
+            function onError(err) {
+                cleanup();
+                deferred.reject(err);
+            }
+
+            function onEnd(compilation) {
+                cleanup();
+                deferred.resolve(compilation);
+            }
+
+            compiler
+            .on('error', onError)
+            .on('end', onEnd);
+
+            return deferred.promise;
+        },
+    });
 
     return compiler;
 }
 
-module.exports = webpackIsomorphicCompiler;
-module.exports.reporter = reporter;
+module.exports = compiler;
