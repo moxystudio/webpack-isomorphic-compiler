@@ -5,92 +5,82 @@ const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
-describe('state', () => {
-    afterEach(() => createCompiler.teardown());
+afterEach(() => createCompiler.teardown());
 
-    it('should have correct state before and after a successful run', () => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
+it('should have correct state before and after a successful run', async () => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
 
+    expect(compiler.isCompiling()).toBe(false);
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
+
+    const compilation = await compiler.run();
+
+    expect(compilation).toBeDefined();
+    expect(compiler.isCompiling()).toBe(false);
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(compilation);
+});
+
+it('should have correct state before and after a failed run', async () => {
+    const compiler = createCompiler(configClientBasic, configServerSyntaxError);
+
+    expect.assertions(7);
+
+    expect(compiler.isCompiling()).toBe(false);
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
+
+    try {
+        await compiler.run();
+    } catch (err) {
+        expect(err).toBeDefined();
         expect(compiler.isCompiling()).toBe(false);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
+        expect(compiler.getError()).toBe(err);
+        expect(compiler.getCompilation()).toBe(null);
+    }
+});
 
-        const promise = compiler.run()
-        .then((stats) => {
-            expect(stats).toBeDefined();
-            expect(compiler.isCompiling()).toBe(false);
-            expect(compiler.getError()).toBe(null);
-            expect(compiler.getStats()).toBe(stats);
-        });
+it('should have correct state before and after a successful watch run', (done) => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
 
-        expect(compiler.isCompiling()).toBe(true);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
+    expect(compiler.isCompiling()).toBe(false);
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
 
-        return promise;
+    compiler.watch((err, compilation) => {
+        expect(err).toBe(null);
+        expect(compilation).toBeDefined();
+        expect(compiler.isCompiling()).toBe(false);
+        expect(compiler.getError()).toBe(err);
+        expect(compiler.getCompilation()).toBe(compilation);
+
+        done();
     });
 
-    it('should have correct state before and after a failed run', () => {
-        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
+    expect(compiler.isCompiling()).toBe(true);  // Takes some time to start compiling
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
+});
 
+it('should have correct state before and after a failed watch run', (done) => {
+    const compiler = createCompiler(configClientBasic, configServerSyntaxError);
+
+    expect(compiler.isCompiling()).toBe(false);
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
+
+    compiler.watch((err, compilation) => {
+        expect(err).toBeDefined();
+        expect(compilation).toBe(null);
         expect(compiler.isCompiling()).toBe(false);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
+        expect(compiler.getError()).toBe(err);
+        expect(compiler.getCompilation()).toBe(null);
 
-        compiler.run()
-        .then(() => {
-            throw new Error('Should have failed');
-        }, (err) => {
-            expect(err).toBeDefined();
-            expect(compiler.isCompiling()).toBe(false);
-            expect(compiler.getError()).toBe(err);
-            expect(compiler.getStats()).toBe(null);
-        });
-
-        expect(compiler.isCompiling()).toBe(true);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
+        done();
     });
 
-    it('should have correct state before and after a successful watch run', (done) => {
-        const compiler = createCompiler(configClientBasic, configServerBasic);
-
-        expect(compiler.isCompiling()).toBe(false);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
-
-        compiler.watch((err, stats) => {
-            expect(err).toBe(null);
-            expect(stats).toBeDefined();
-            expect(compiler.isCompiling()).toBe(false);
-            expect(compiler.getError()).toBe(err);
-            expect(compiler.getStats()).toBe(stats);
-            done();
-        });
-
-        expect(compiler.isCompiling()).toBe(true);  // Takes some time to start compiling
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
-    });
-
-    it('should have correct state before and after a failed watch run', (done) => {
-        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
-
-        expect(compiler.isCompiling()).toBe(false);
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
-
-        compiler.watch((err, stats) => {
-            expect(err).toBeDefined();
-            expect(stats).toBe(null);
-            expect(compiler.isCompiling()).toBe(false);
-            expect(compiler.getError()).toBe(err);
-            expect(compiler.getStats()).toBe(null);
-            done();
-        });
-
-        expect(compiler.isCompiling()).toBe(true);  // Takes some time to start compiling
-        expect(compiler.getError()).toBe(null);
-        expect(compiler.getStats()).toBe(null);
-    });
+    expect(compiler.isCompiling()).toBe(true);  // Takes some time to start compiling
+    expect(compiler.getError()).toBe(null);
+    expect(compiler.getCompilation()).toBe(null);
 });

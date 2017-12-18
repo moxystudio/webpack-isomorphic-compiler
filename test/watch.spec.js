@@ -1,152 +1,138 @@
 'use strict';
 
 const fs = require('fs');
-const pTry = require('p-try');
-const Compiler = require('webpack/lib/Compiler');
 const createCompiler = require('./util/createCompiler');
+const touchFile = require('./util/touchFile');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configClientSyntaxError = require('./configs/client-syntax-error');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
-describe('.watch()', () => {
-    afterEach(() => createCompiler.teardown());
+afterEach(() => createCompiler.teardown());
 
-    it('should call the handler everytime a file changes', (done) => {
+it('should call the handler everytime a file changes', (done) => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
+    let callsCount = 0;
+
+    compiler.watch((err, compilation) => {
+        expect(err).toBe(null);
+
+        const { clientStats, serverStats, stats, duration } = compilation;
+
+        expect(clientStats.toJson().assetsByChunkName).toEqual({ main: 'client.js' });
+        expect(serverStats.toJson().assetsByChunkName).toEqual({ main: 'server.js' });
+        expect(typeof duration).toBe('number');
+        expect(stats).toBe(clientStats);
+
+        callsCount += 1;
+
+        if (callsCount === 2) {
+            done();
+        } else {
+            touchFile(configClientBasic.entry);
+        }
+    });
+});
+
+it('should fail if the compiler fails', async () => {
+    await new Promise((resolve) => {
+        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
+
+        compiler.watch((err, compilation) => {
+            expect(err instanceof Error).toBe(true);
+            expect(err.message).toBe('Webpack compilation failed (server)');
+            expect(compilation).toBe(null);
+
+            resolve();
+        });
+    });
+
+    await new Promise((resolve) => {
+        const compiler = createCompiler(configClientSyntaxError, configServerBasic);
+
+        compiler.watch((err, compilation) => {
+            expect(err instanceof Error).toBe(true);
+            expect(err.message).toBe('Webpack compilation failed (client)');
+            expect(compilation).toBe(null);
+
+            resolve();
+        });
+    });
+});
+
+it('should fail if there\'s a fatal error', (done) => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
+    const contrivedError = new Error('foo');
+
+    compiler.client.webpackCompiler.plugin('watch-run', (compiler, callback) => callback(contrivedError));
+
+    compiler.watch((err) => {
+        expect(err).toBe(contrivedError);
+
+        done();
+    });
+});
+
+it('should output assets', (done) => {
+    const compiler = createCompiler(configClientBasic, configServerBasic);
+
+    compiler.watch(() => {
+        expect(fs.existsSync(`${compiler.client.webpackConfig.output.path}/client.js`)).toBe(true);
+        expect(fs.existsSync(`${compiler.server.webpackConfig.output.path}/server.js`)).toBe(true);
+
+        done();
+    });
+});
+
+describe('args', () => {
+    it('should work with .watch()', (done) => {
         const compiler = createCompiler(configClientBasic, configServerBasic);
 
-        let callsCount = 0;
+        compiler
+        .on('end', () => done())
+        .on('error', (err) => done.fail(err))
+        .watch();
+    });
 
-        compiler.watch((err, stats) => {
-            expect(err).toBe(null);
-            expect(stats.client.toJson().assetsByChunkName).toEqual({ main: 'client.js' });
-            expect(stats.server.toJson().assetsByChunkName).toEqual({ main: 'server.js' });
+    it('should work with .watch(options)', (done) => {
+        const compiler = createCompiler(configClientBasic, configServerBasic);
 
-            callsCount += 1;
+        compiler
+        .on('end', () => done())
+        .on('error', (err) => done.fail(err))
+        .watch({ poll: true });
+    });
 
-            if (callsCount === 2) {
-                done();
+    it('should work with .watch(options, handler)', (done) => {
+        const compiler = createCompiler(configClientBasic, configServerBasic);
+
+        compiler.watch({}, (err) => {
+            if (err) {
+                done.fail(err);
             } else {
-                fs.writeFileSync(configClientBasic.entry, fs.readFileSync(configClientBasic.entry));
+                done();
             }
         });
     });
 
-    it('should fail if one of the compilers fails', () => (
-        pTry(() => new Promise((resolve) => {
-            const compiler = createCompiler(configClientBasic, configServerSyntaxError);
-
-            compiler.watch((err, stats) => {
-                expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bserver-side\b/);
-                expect(stats).toBe(null);
-                resolve();
-            });
-        }))
-        .then(() => new Promise((resolve) => {
-            const compiler = createCompiler(configClientSyntaxError, configServerBasic);
-
-            compiler.watch((err, stats) => {
-                expect(err instanceof Error).toBe(true);
-                expect(err.message).toMatch(/\bclient-side\b/);
-                expect(stats).toBe(null);
-                resolve();
-            });
-        }))
-    ));
-
-    it('should fail if there\'s a fatal error', (done) => {
+    it('should work with .watch(handler)', (done) => {
         const compiler = createCompiler(configClientBasic, configServerBasic);
-        const contrivedError = new Error('foo');
-
-        compiler.client.webpackCompiler.plugin('watch-run', (compiler, callback) => callback(contrivedError));
 
         compiler.watch((err) => {
-            expect(err).toBe(contrivedError);
-            done();
+            if (err) {
+                done.fail(err);
+            } else {
+                done();
+            }
         });
     });
 
-    it('should output both client & server assets', (done) => {
+    it('should throw if not idle', () => {
         const compiler = createCompiler(configClientBasic, configServerBasic);
 
-        compiler.watch(() => {
-            expect(fs.existsSync(`${compiler.client.webpackConfig.output.path}/client.js`)).toBe(true);
-            expect(fs.existsSync(`${compiler.server.webpackConfig.output.path}/server.js`)).toBe(true);
-            done();
-        });
-    });
+        compiler.watch();
 
-    it('should wait for both compilers before resolving the promise, even if one fails', (done) => {
-        let handlerCallsCount = 0;
-        const originalWatch = Compiler.prototype.watch;
-
-        Compiler.prototype.watch = function (options, handler) {
-            return originalWatch.call(this, options, (...args) => {  // eslint-disable-line no-invalid-this
-                handlerCallsCount += 1;
-                handler(...args);
-            });
-        };
-
-        const compiler = createCompiler(configClientBasic, configServerSyntaxError);
-
-        compiler.watch(() => {
-            Compiler.prototype.watch = originalWatch;
-            expect(handlerCallsCount).toBe(2);
-            done();
-        });
-    });
-
-    describe('args', () => {
-        it('should work with .watch()', (done) => {
-            const compiler = createCompiler(configClientBasic, configServerBasic);
-
-            compiler
-            .on('end', () => done())
-            .on('error', (err) => done.fail(err))
-            .watch();
-        });
-
-        it('should work with .watch(options)', (done) => {
-            const compiler = createCompiler(configClientBasic, configServerBasic);
-
-            compiler
-            .on('end', () => done())
-            .on('error', (err) => done.fail(err))
-            .watch();
-        });
-
-        it('should work with .watch(options, handler)', (done) => {
-            const compiler = createCompiler(configClientBasic, configServerBasic);
-
-            compiler.watch({}, (err) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    done();
-                }
-            });
-        });
-
-        it('should work with .watch(handler)', (done) => {
-            const compiler = createCompiler(configClientBasic, configServerBasic);
-
-            compiler.watch((err) => {
-                if (err) {
-                    done.fail(err);
-                } else {
-                    done();
-                }
-            });
-        });
-
-        it('should throw if not idle', () => {
-            const compiler = createCompiler(configClientBasic, configServerBasic);
-
-            compiler.watch();
-
-            expect(() => compiler.run()).toThrow(/\bidling\b/);
-            expect(() => compiler.watch()).toThrow(/\bidling\b/);
-        });
+        expect(() => compiler.run()).toThrow(/\bidle\b/);
+        expect(() => compiler.watch()).toThrow(/\bidle\b/);
     });
 });

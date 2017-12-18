@@ -31,28 +31,26 @@ The current version works with webpack v2 and v3.
 With webpack, client-side applications with server-side rendering means compiling both the client and the server.   
 To make it right, the client and server compilers must be in sync and live in perfect harmony.
 
-Webpack offers a multi-compiler that makes this easier, but unfortunately it doesn't have all the plugin handlers that a single compiler does. This makes it difficult to know what's happening under the hood.
+Webpack offers a multi-compiler that makes this possible, but unfortunately it doesn't have all the plugin handlers that a single compiler does. This makes it difficult to know what's happening under the hood.
 
 This module packs an aggregated compiler which syncs up the client & server compilation and:
 
 - Has a clearer and saner API
 - Warns about mistakes within your webpack configs
-- Has [beautiful](http://i.imgur.com/rgy7QcT.gif) [reporting](#reporter)
+- Has 100% API compatibility with [webpack-sane-compiler](https://github.com/moxystudio/webpack-sane-compiler), allowing you to use its [reporter](https://github.com/moxystudio/webpack-sane-compiler-reporter) and [notifier](https://github.com/moxystudio/webpack-sane-compiler-notifier)
+
+*NOTE*: While `webpack-sane-compiler-reporter` is compatible with this compiler, we advise using [https://github.com/moxystudio/webpack-isomorphic-compiler-reporter] instead for completeness and accurateness.
 
 
-## API
-
-**webpackIsomorphicCompiler(clientCompiler, serverCompiler)**
-
-Creates an aggregated compiler that wraps both client and server webpack compilers.   
+## Usage
 
 ```js
 const webpack = require('webpack');
-const webpackIsomorphicCompiler = require('webpack-isomorphic-compiler');
+const isomorphicWebpack = require('webpack-isomorphic-compiler');
 
 const clientCompiler = webpack(/* client config */);
 const serverCompiler =  webpack(/* server config */);
-const compiler = webpackIsomorphicCompiler(clientCompiler, serverCompiler);
+const compiler = isomorphicWebpack(clientCompiler, serverCompiler);
 ```
 
 Alternatively, you may pass a config directly instead of a webpack compiler:
@@ -60,136 +58,26 @@ Alternatively, you may pass a config directly instead of a webpack compiler:
 ```js
 const webpack = require('webpack');
 
-const compiler = webpackIsomorphicCompiler(/* client config */, /* server config */);
+const compiler = isomorphicWebpack(/* client config */, /* server config */);
 ```
 
-The compiler inherits from [EventEmitter](https://nodejs.org/api/events.html) and emits the following events:
+The returned `compiler` has exactly the same API as the [webpack-sane-compiler](https://github.com/moxystudio/webpack-sane-compiler) but adds some functionality that is detailed below.
 
-| Name   | Description   | Argument |
-| ------ | ------------- | -------- |
-| begin | Emitted when a compilation starts | |
-| error | Emitted when the compilation fails | err |
-| end | Emitted when the compilation completes successfully | stats |
+### Compilation result
 
-```js
-compiler
-.on('begin', () => console.log('Compilation started'))
-.on('end', (stats) => {
-    console.log('Compilation finished successfully');
-    console.log('Client stats', stats.client);
-    console.log('Server stats', stats.server);
-})
-.on('error', (err) => {
-    console.log('Compilation failed')
-    console.log(err.message);
-    console.log(err.stats.toString());
-})
-```
-
-### .run([options])
-
-Compiles both the client & server.   
-Returns a promise that fulfills with a `stats` object or is rejected with an error.
-
-This is similar to webpack's run() method, except that it returns a promise which gets rejected if stats contains errors.
+The compilation result, available through `.run()`, `.watch()`, `.getCompilation()` and `.resolve()`, has two more properties:
 
 ```js
 compiler.run()
-.then((stats) => {
-    // stats = {
-    //   client,
-    //   server,
-    // }
+.then(({ clientStats, serverStats, stats, duration }) => {
+    // clientStats is the webpack stats of the client
+    // serverStats is the webpack stats of the client
+    // duration is the aggregated compilation duration
+    // stats maps to clientStats for API compatibility
 })
-.catch((err) => {
-    // err = {
-    //   message: 'Error message',
-    //   [stats]: <webpack-stats>
-    // }
-});
 ```
 
-Available options:
-
-| Name   | Description   | Type     | Default  |
-| ------ | ------------- | -------- | -------- |
-| report | Enable reporting | boolean/[object](#reporter) | false |
-
-### .watch([options], [handler])
-
-Starts watching for changes and compiles on-the-fly.   
-Returns itself to allow chaining.
-
-Calls `handler` everytime the compilation fails or succeeds.
-This is similar to webpack's watch() method, except that `handler` gets called with an error if stats contains errors.
-
-Available options:
-
-| Name   | Description   | Type     | Default |
-| ------ | ------------- | -------- | ------- |
-| poll | Use polling instead of native watchers | boolean | false |
-| aggregateTimeout | Wait so long for more changes (ms) | err | 200 |
-| report | Enable reporting | boolean/[object](#reporter) | false |
-
-```js
-compiler.watch((err, stats) => {
-    // err = {
-    //   message: 'Error message',
-    //   [stats]: <webpack-stats>
-    // }
-    // stats = {
-    //   client,
-    //   server,
-    // }
-});
-```
-
-### .unwatch()
-
-Stops watching for changes.   
-Returns a promise that fulfills when done.
-
-
-### .resolve()
-
-Resolves the compiler result.
-
-The promise gets immediately resolved if the compiler has finished or failed.  
-Otherwise waits for a compilation to be done before resolving the promise.
-
-```js
-compiler.resolve()
-.then((stats) => {
-    // stats = {
-    //   client,
-    //   server,
-    // }
-})
-.catch((err) => {
-    // err = {
-    //   message: 'Error message',
-    //   [stats]: <webpack-stats>
-    // }
-});
-```
-
-
-### .isCompiling()
-
-Returns a boolean indicating if the code is being compiled.
-
-
-### .getError()
-
-Returns the compilation error or null if none.
-
-
-### .getStats()
-
-Returns the compilation stats object (`{ client, server }`) or null if it failed or not yet available.
-
-
-### Client & server webpack related properties
+### Client & server webpack
 
 Both `client` and `server` properties contain their webpack configs & compilers.
 
@@ -199,21 +87,6 @@ Both `client` and `server` properties contain their webpack configs & compilers.
 | webpackConfig | The client's webpack config | object |
 
 Accessing webpack compiler public methods is NOT allowed and will throw an error.
-
-
-### Reporter
-
-Both `run()` and `watch()` accepts a `report` option that, when enabled, prints information related to the compilation process.
-The option can be a boolean or an object that maps to the following options:
-
-| Name   | Description   | Type     | Default |
-| ------ | ------------- | -------- | ------- |
-| humanErrors | Detects human errors related to webpack configuration mistakes | boolean | true |
-| stats | Display webpack stats after each successful compilation | boolean/string (true, false or `once`) | true |
-| statsOptions | Which stats to display, see [stats.toString()](https://webpack.js.org/api/node/#stats-object) | [sane default](https://github.com/moxystudio/webpack-isomorphic-compiler/blob/3f572a471fcd6632964471ccf201bb3da348ed40/lib/reporter.js#L83) |
-| output | The target stream of the logs | WritableStream | process.stderr | 
-
-Additionally, you may use the reporter manually through the exported `reporter` function on the `webpack-isomorphic-compiler` module.
 
 
 ## Tests

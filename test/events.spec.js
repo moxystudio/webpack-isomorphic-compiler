@@ -16,89 +16,74 @@ function createCompilerWithEvents(...args) {
     return { compiler, events };
 }
 
-describe('events', () => {
-    afterEach(() => createCompiler.teardown());
+afterEach(() => createCompiler.teardown());
 
-    it('should emit correct events on a successful .run()', () => {
-        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
+it('should emit correct events on a successful .run()', async () => {
+    const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
 
-        return compiler.run()
-        .catch(() => {})
-        .then(() => {
-            expect(events).toEqual([
-                'begin',
-                'end',
-            ]);
-        });
-    });
+    await compiler.run();
 
-    it('should emit correct events on a failed .run()', () => {
-        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
+    expect(events).toEqual(['begin', 'end']);
+});
 
-        return compiler.run()
-        .catch(() => {})
-        .then(() => {
-            expect(events).toEqual([
-                'begin',
-                'error',
-            ]);
-        });
-    });
+it('should emit correct events on a failed .run()', async () => {
+    const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
 
-    it('should emit correct events on a successful .watch() cycle', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
+    try {
+        await compiler.run();
+    } catch (err) { /* Do nothing */ }
 
-        function finish() {
-            expect(events).toEqual([
-                'begin',
-                'end',
-            ]);
-            done();
-        }
+    expect(events).toEqual(['begin', 'error']);
+});
 
-        compiler
-        .on('end', finish)
-        .on('error', finish)
-        .watch();
-    });
+it('should emit correct events on a successful .watch() cycle', (done) => {
+    const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
 
-    it('should emit correct events on a failed .watch() cycle', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
+    function finish() {
+        expect(events).toEqual(['begin', 'end']);
 
-        function finish() {
-            expect(events).toEqual([
-                'begin',
-                'error',
-            ]);
-            done();
-        }
+        done();
+    }
 
-        compiler
-        .on('end', finish)
-        .on('error', finish)
-        .watch();
-    });
+    compiler
+    .on('end', finish)
+    .on('error', finish)
+    .watch();
+});
 
-    it('should emit the correct events if a compilation was canceled via .unwatch()', (done) => {
-        const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
-        let error;
+it('should emit correct events on a failed .watch() cycle', (done) => {
+    const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerSyntaxError);
 
-        function finish() {
-            expect(events).toEqual([
-                'begin',
-                'error',
-            ]);
-            expect(error.message).toMatch(/\bcanceled\b/);
-            done();
-        }
+    function finish() {
+        expect(events).toEqual(['begin', 'error']);
 
-        compiler
-        .on('end', finish)
-        .on('error', (err) => {
-            error = err;
-            finish();
-        })
-        .watch()
-        .unwatch();
-    });
+        done();
+    }
+
+    compiler
+    .on('end', finish)
+    .on('error', finish)
+    .watch();
+});
+
+it('should emit the correct events if a compilation was canceled via .unwatch()', (done) => {
+    const { compiler, events } = createCompilerWithEvents(configClientBasic, configServerBasic);
+    let error;
+
+    function finish() {
+        expect(events).toEqual(['begin', 'error']);
+        expect(error.message).toMatch(/\bcanceled\b/);
+
+        done();
+    }
+
+    compiler
+    .on('end', finish)
+    .on('error', (err) => {
+        error = err;
+
+        finish();
+    })
+    .watch()
+    .unwatch();
 });
