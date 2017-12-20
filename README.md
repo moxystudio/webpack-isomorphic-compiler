@@ -89,6 +89,16 @@ Both `client` and `server` properties contain their webpack configs & compilers.
 Accessing webpack compiler public methods is NOT allowed and will throw an error.
 
 
+## Related projects
+
+You may also want to look at:
+
+- [webpack-isomorphic-dev-middleware](https://github.com/moxystudio/webpack-isomorphic-dev-middleware): Like webpack-dev-middleware, but for isomorphic applications
+- [webpack-isomorphic-compiler-reporter](https://github.com/moxystudio/webpack-isomorphic-compiler-reporter): Beautiful reporting for this compiler
+- [webpack-sane-compiler-notifier](https://github.com/moxystudio/webpack-sane-compiler-notifier): Receive OS notifications for this compiler
+- [webpack-sane-compiler](https://github.com/moxystudio/webpack-sane-compiler): A webpack compiler wrapper that provides a nicer API
+
+
 ## Tests
 
 `$ npm test`   
