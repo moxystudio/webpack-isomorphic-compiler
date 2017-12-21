@@ -44,7 +44,7 @@
   },
   "commitlint": {
     "extends": [
-      "@commitlint/config-angular"
+      "@commitlint/config-conventional"
     ]
   },
   "peerDependencies": {
@@ -56,8 +56,8 @@
     "webpack-sane-compiler": "^2.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^5.0.1",
-    "@commitlint/config-angular": "^4.3.0",
+    "@commitlint/cli": "^5.2.4",
+    "@commitlint/config-conventional": "^5.2.3",
     "delay": "^2.0.0",
     "eslint": "^4.0.0",
     "eslint-config-moxy": "^4.1.0",
