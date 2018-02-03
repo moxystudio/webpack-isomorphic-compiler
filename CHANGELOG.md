@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/moxystudio/webpack-isomorphic-compiler/compare/v2.0.1...v3.0.0) (2018-02-03)
+
+
+### Features
+
+* allow invalidating a compilation in watch mode ([7c68c41](https://github.com/moxystudio/webpack-isomorphic-compiler/commit/7c68c41))
+
+
+### BREAKING CHANGES
+
+* `.watch` no longer returns the compiler and now returns a function that, when called, will stop an ongoing compilation and start a new one. It also emits the `invalidate` event.
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/moxystudio/webpack-isomorphic-compiler/compare/v2.0.0...v2.0.1) (2018-01-14)
 
