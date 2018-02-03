@@ -2,6 +2,7 @@
 
 const pSettle = require('p-settle');
 const pDefer = require('p-defer');
+const wrap = require('lodash.wrap');
 const webpackSaneCompiler = require('webpack-sane-compiler');
 const observeCompilers = require('./lib/observeCompilers');
 
@@ -34,8 +35,8 @@ function compiler(client, server) {
         },
 
         run() {
-            clientCompiler.assertIdle();
-            serverCompiler.assertIdle();
+            clientCompiler.assertIdle('run');
+            serverCompiler.assertIdle('run');
 
             return pSettle([
                 clientCompiler.run(),
@@ -51,22 +52,28 @@ function compiler(client, server) {
         },
 
         watch(options, handler) {
-            clientCompiler.assertIdle();
-            serverCompiler.assertIdle();
+            clientCompiler.assertIdle('watch');
+            serverCompiler.assertIdle('watch');
 
             if (typeof options === 'function') {
                 handler = options;
                 options = null;
             }
 
-            function baseHandler() {
+            handler = handler && wrap(handler, (handler) => {
                 !state.isCompiling && handler(state.error, state.compilation);
-            }
+            });
 
-            clientCompiler.watch(options, handler && baseHandler);
-            serverCompiler.watch(options, handler && baseHandler);
+            const clientInvalidate = clientCompiler.watch(options, handler);
+            const serverInvalidate = serverCompiler.watch(options, handler);
 
-            return compiler;
+            return () => {
+                eventEmitter.emit('invalidate');
+                observeCompilers.resetState(state);
+
+                clientInvalidate();
+                serverInvalidate();
+            };
         },
 
         unwatch() {
@@ -92,20 +99,20 @@ function compiler(client, server) {
             // Wait for it to be resolved
             const deferred = pDefer();
 
-            function cleanup() {
+            const cleanup = () => {
                 eventEmitter.removeListener('error', onError);
                 eventEmitter.removeListener('end', onEnd);
-            }
+            };
 
-            function onError(err) {
+            const onError = (err) => {
                 cleanup();
                 deferred.reject(err);
-            }
+            };
 
-            function onEnd(compilation) {
+            const onEnd = (compilation) => {
                 cleanup();
                 deferred.resolve(compilation);
-            }
+            };
 
             compiler
             .on('error', onError)
