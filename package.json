@@ -26,6 +26,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest --env node --coverage",
+    "posttest": "rimraf test/tmp",
     "prerelease": "npm t && npm run lint",
     "release": "standard-version",
     "precommit": "lint-staged",
@@ -51,9 +52,10 @@
     "webpack": ">=2.0.0 <4.0.0"
   },
   "dependencies": {
+    "lodash.wrap": "^4.1.1",
     "p-defer": "^1.0.0",
     "p-settle": "^2.0.0",
-    "webpack-sane-compiler": "^2.1.0"
+    "webpack-sane-compiler": "^3.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^6.0.1",

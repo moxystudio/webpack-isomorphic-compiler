@@ -9,8 +9,6 @@ const webpackIsomorphicCompiler = require('../../');
 const tmpDir = path.resolve(`${__dirname}/../tmp`);
 const compilers = [];
 
-// -----------------------------------------------------------
-
 function createCompiler(clientWebpackConfig, serverWebpackConfig) {
     clientWebpackConfig = uniquifyConfig(clientWebpackConfig);
     serverWebpackConfig = uniquifyConfig(serverWebpackConfig);

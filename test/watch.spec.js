@@ -84,6 +84,26 @@ it('should output assets', (done) => {
     });
 });
 
+describe('invalidate', () => {
+    it('should return a function that can be used to invalidate and retrigger a compilation', (done) => {
+        const compiler = createCompiler(configClientBasic, configServerBasic);
+        const logEvent = jest.fn();
+
+        compiler.once('begin', () => setImmediate(() => invalidate()));
+        compiler.on('begin', () => logEvent('begin'));
+        compiler.on('invalidate', () => logEvent('invalidate'));
+        compiler.on('end', () => logEvent('end'));
+
+        const invalidate = compiler.watch(() => {
+            const loggedEvents = logEvent.mock.calls.reduce((results, [event]) => [...results, event], []);
+
+            expect(loggedEvents).toEqual(['begin', 'invalidate', 'begin', 'end']);
+
+            done();
+        });
+    });
+});
+
 describe('args', () => {
     it('should work with .watch()', (done) => {
         const compiler = createCompiler(configClientBasic, configServerBasic);

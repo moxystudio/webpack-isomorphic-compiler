@@ -24,9 +24,9 @@ it('should stop watching changes (sync)', async () => {
 
     let callsCount = 0;
 
-    const unwatchPromise = compiler
-    .watch(() => { callsCount += 1; })
-    .unwatch();
+    compiler.watch(() => { callsCount += 1; });
+
+    const unwatchPromise = compiler.unwatch();
 
     await Promise.all([unwatchPromise, delay(2000)]);
 
