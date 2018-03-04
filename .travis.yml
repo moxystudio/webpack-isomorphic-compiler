@@ -2,6 +2,11 @@ language: node_js
 node_js:
   - "node"
   - "lts/*"
+# Ensure that our code works on older versions of Webpack
+script:
+  - "npm test"
+  - "npm install webpack@^3 --no-save && npm test -- --no-coverage"
+  - "npm install webpack@^2 --no-save && npm test -- --no-coverage"
 # Report coverage
 after_success:
   - "npm i codecov"

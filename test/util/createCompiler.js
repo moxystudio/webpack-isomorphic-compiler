@@ -5,6 +5,7 @@ const pify = require('pify');
 const pFinally = require('p-finally');
 const rimraf = pify(require('rimraf'));
 const webpackIsomorphicCompiler = require('../../');
+const { createAddHook } = require('webpack-sane-compiler/lib/observeWebpackCompiler');
 
 const tmpDir = path.resolve(`${__dirname}/../tmp`);
 const compilers = [];
@@ -15,6 +16,8 @@ function createCompiler(clientWebpackConfig, serverWebpackConfig) {
 
     const compiler = webpackIsomorphicCompiler(clientWebpackConfig, serverWebpackConfig);
 
+    compiler.addClientHook = createAddHook(compiler.client.webpackCompiler);
+    compiler.addServerHook = createAddHook(compiler.server.webpackCompiler);
     compilers.push(compiler);
 
     return compiler;

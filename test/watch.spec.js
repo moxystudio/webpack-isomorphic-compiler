@@ -8,6 +8,8 @@ const configServerBasic = require('./configs/server-basic');
 const configClientSyntaxError = require('./configs/client-syntax-error');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
+jest.setTimeout(20000);
+
 afterEach(() => createCompiler.teardown());
 
 it('should call the handler everytime a file changes', (done) => {
@@ -29,7 +31,7 @@ it('should call the handler everytime a file changes', (done) => {
         if (callsCount === 2) {
             done();
         } else {
-            touchFile(configClientBasic.entry);
+            setTimeout(() => touchFile(configClientBasic.entry), 150);
         }
     });
 });
@@ -64,7 +66,7 @@ it('should fail if there\'s a fatal error', (done) => {
     const compiler = createCompiler(configClientBasic, configServerBasic);
     const contrivedError = new Error('foo');
 
-    compiler.client.webpackCompiler.plugin('watch-run', (compiler, callback) => callback(contrivedError));
+    compiler.addClientHook('watchRun', 'tapAsync', (compiler, callback) => callback(contrivedError));
 
     compiler.watch((err) => {
         expect(err).toBe(contrivedError);
