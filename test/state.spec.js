@@ -5,6 +5,8 @@ const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
+jest.setTimeout(20000);
+
 afterEach(() => createCompiler.teardown());
 
 it('should have correct state before and after a successful run', async () => {

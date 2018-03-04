@@ -7,6 +7,8 @@ const configServerBasic = require('./configs/server-basic');
 const configClientSyntaxError = require('./configs/client-syntax-error');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
+jest.setTimeout(20000);
+
 afterEach(() => createCompiler.teardown());
 
 it('should fulfill with the compilation result', async () => {
@@ -46,7 +48,7 @@ it('should fail if there\'s a fatal error', async () => {
     const compiler = createCompiler(configClientBasic, configServerBasic);
     const contrivedError = new Error('foo');
 
-    compiler.client.webpackCompiler.plugin('before-run', (compiler, callback) => {
+    compiler.addClientHook('beforeRun', 'tapAsync', (compiler, callback) => {
         setImmediate(() => callback(contrivedError));
     });
 

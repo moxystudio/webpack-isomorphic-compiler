@@ -6,6 +6,8 @@ const createCompiler = require('./util/createCompiler');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 
+jest.setTimeout(20000);
+
 describe('misc', () => {
     afterEach(() => createCompiler.teardown());
 
@@ -17,7 +19,7 @@ describe('misc', () => {
             expect(typeof compiler[type].webpackConfig).toBe('object');
             expect(typeof compiler[type].webpackConfig.output).toBe('object');
             expect(typeof compiler[type].webpackCompiler).toBe('object');
-            expect(typeof compiler[type].webpackCompiler.plugin).toBe('function');
+            expect(typeof compiler[type].webpackCompiler.createCompilation).toBe('function');
         });
     });
 
