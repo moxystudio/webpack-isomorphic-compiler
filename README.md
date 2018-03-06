@@ -23,7 +23,7 @@ A compiler that makes your life easier if you are building isomorphic [webpack](
 
 `$ npm install webpack-isomorphic-compiler --save-dev`
 
-The current version works with webpack v2 and v3.
+The current version works with webpack v2, v3 and v4.
 
 
 ## Motivation
