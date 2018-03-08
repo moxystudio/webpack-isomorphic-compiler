@@ -17,8 +17,6 @@ function createCompilerWithEvents(...args) {
     return { compiler, events };
 }
 
-jest.setTimeout(20000);
-
 afterEach(() => createCompiler.teardown());
 
 it('should emit correct events on a successful .run()', async () => {

@@ -7,8 +7,6 @@ const configServerBasic = require('./configs/server-basic');
 const configClientSyntaxError = require('./configs/client-syntax-error');
 const configServerSyntaxError = require('./configs/server-syntax-error');
 
-jest.setTimeout(20000);
-
 afterEach(() => createCompiler.teardown());
 
 it('should fulfill with the compilation result', async () => {

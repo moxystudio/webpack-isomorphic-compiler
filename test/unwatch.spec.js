@@ -6,8 +6,6 @@ const touchFile = require('./util/touchFile');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 
-jest.setTimeout(20000);
-
 afterEach(() => createCompiler.teardown());
 
 it('should return a promise', () => {

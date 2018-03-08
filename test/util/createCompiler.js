@@ -1,18 +1,20 @@
 'use strict';
 
 const path = require('path');
+const webpack = require('webpack');
 const pify = require('pify');
 const pFinally = require('p-finally');
 const rimraf = pify(require('rimraf'));
 const webpackIsomorphicCompiler = require('../../');
 const { createAddHook } = require('webpack-sane-compiler/lib/observeWebpackCompiler');
 
+const supportsMode = !!webpack.version;
 const tmpDir = path.resolve(`${__dirname}/../tmp`);
 const compilers = [];
 
 function createCompiler(clientWebpackConfig, serverWebpackConfig) {
-    clientWebpackConfig = uniquifyConfig(clientWebpackConfig);
-    serverWebpackConfig = uniquifyConfig(serverWebpackConfig);
+    clientWebpackConfig = prepareConfig(clientWebpackConfig);
+    serverWebpackConfig = prepareConfig(serverWebpackConfig);
 
     const compiler = webpackIsomorphicCompiler(clientWebpackConfig, serverWebpackConfig);
 
@@ -56,16 +58,22 @@ function teardown() {
     return Promise.all(promises);
 }
 
-function uniquifyConfig(webpackConfig) {
+function prepareConfig(webpackConfig) {
     if (webpackConfig.output.path.indexOf(tmpDir) !== 0) {
         throw new Error(`\`webpackConfig.output.path\` must start with ${tmpDir}`);
     }
 
+    // Uniquify config
     const uid = `${Math.round(Math.random() * 100000000000).toString(36)}-${Date.now().toString(36)}`;
 
-    webpackConfig = Object.assign({}, webpackConfig);
-    webpackConfig.output = Object.assign({}, webpackConfig.output);
+    webpackConfig = { ...webpackConfig };
+    webpackConfig.output = { ...webpackConfig.output };
     webpackConfig.output.path = webpackConfig.output.path.replace(tmpDir, path.join(tmpDir, uid));
+
+    // Ensure mode is set to development on webpack >= 4
+    if (supportsMode) {
+        webpackConfig.mode = 'development';
+    }
 
     return webpackConfig;
 }
@@ -76,5 +84,5 @@ function push(compiler) {
 
 module.exports = createCompiler;
 module.exports.teardown = teardown;
-module.exports.uniquifyConfig = uniquifyConfig;
+module.exports.prepareConfig = prepareConfig;
 module.exports.push = push;

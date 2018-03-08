@@ -6,8 +6,6 @@ const createCompiler = require('./util/createCompiler');
 const configClientBasic = require('./configs/client-basic');
 const configServerBasic = require('./configs/server-basic');
 
-jest.setTimeout(20000);
-
 describe('misc', () => {
     afterEach(() => createCompiler.teardown());
 
@@ -32,8 +30,8 @@ describe('misc', () => {
     });
 
     it('should allow passing compilers instead of configs', async () => {
-        const clientCompiler = webpack(createCompiler.uniquifyConfig(configClientBasic));
-        const serverCompiler = webpack(createCompiler.uniquifyConfig(configServerBasic));
+        const clientCompiler = webpack(createCompiler.prepareConfig(configClientBasic));
+        const serverCompiler = webpack(createCompiler.prepareConfig(configServerBasic));
         const compiler = isomorphicCompiler(clientCompiler, serverCompiler);
 
         createCompiler.push(compiler);
