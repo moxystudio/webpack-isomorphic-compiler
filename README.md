@@ -1,6 +1,6 @@
 # webpack-isomorphic-compiler
 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] 
 
 [npm-url]:https://npmjs.org/package/webpack-isomorphic-compiler
 [npm-image]:http://img.shields.io/npm/v/webpack-isomorphic-compiler.svg
@@ -13,8 +13,6 @@
 [david-dm-image]:https://img.shields.io/david/moxystudio/webpack-isomorphic-compiler.svg
 [david-dm-dev-url]:https://david-dm.org/moxystudio/webpack-isomorphic-compiler?type=dev
 [david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/webpack-isomorphic-compiler.svg
-[greenkeeper-image]:https://badges.greenkeeper.io/moxystudio/webpack-isomorphic-compiler.svg
-[greenkeeper-url]:https://greenkeeper.io
 
 A compiler that makes your life easier if you are building isomorphic [webpack](https://webpack.js.org/) powered apps, that is, single page applications with server-side rendering.
 
