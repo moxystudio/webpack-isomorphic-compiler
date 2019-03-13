@@ -64,7 +64,7 @@
     "eslint": "^5.3.0",
     "eslint-config-moxy": "^6.0.1",
     "husky": "^0.14.0",
-    "jest": "^23.4.2",
+    "jest": "^24.5.0",
     "lint-staged": "^7.0.0",
     "lodash.escaperegexp": "^4.1.2",
     "p-try": "^2.0.0",
